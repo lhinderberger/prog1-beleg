@@ -6,6 +6,7 @@ für die Benutzeroberfläche programmiert werden soll.
 
 \bigskip
 
+\noindent
 Aus der online verfügbaren, vollständigen Aufgabenstellung\footnote{\url{http://www.informatik.htw-dresden.de/~beck/PSPI/Belegaufgaben/},
 abgerufen am 8.12.2016} können folgende direkte Anforderungen entnommen werden:
 
@@ -41,7 +42,7 @@ Nutzerdokumentation erfordern
 \item Das Programm -- insbesondere die Module für Abstraktion, Speicherung und Verwaltung von Datensätzen (vgl.
 Kernschicht im Grobentwurf) -- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
 Hierbei soll nach Möglichkeit auch das Vorgehen der Testgetriebenen Entwicklung (TDD) erprobt werden.
-\item Dem Nutzer soll ermöglicht werden, optional zu einem Datensatz auch ein Bild zu speichern
+\item Dem Nutzer soll es ermöglicht werden, optional zu einem Datensatz auch ein Bild zu speichern
 \item Die in GTK+ vorhandenen Schnittstellen zur Internationalisierung sollen genutzt werden.\footnote{Selbst wenn das
 Programm praktisch gesehen wohl einsprachig bleiben wird, ist dies noch immer der für GTK+-Anwendungen übliche Weg
 und mit vernachlässigbar wenig Mehraufwand umsetzbar.}
@@ -53,4 +54,11 @@ so haben diese Änderungen zu verfallen.
 Format exportierbar sein.
 \end{itemize}
 
+\newpage
 \subsection{Domänenmodell}
+Ein einfaches, objektorientiertes Domänenmodell, welches obige Anforderungen unter Vernachlässigung dynamischer Aspekte
+und Implementierungsdetails visualisiert, kann wie folgt aussehen:
+
+\begin{center}
+\noindent\includegraphics[width=100mm,keepaspectratio]{images/01-domaenenmodell.png}
+\end{center}
