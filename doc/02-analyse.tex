@@ -40,7 +40,7 @@ der Aufgabenstellung als sinnvoll und einfach umzusetzen bzw. allgemein als bew�
 \item Die Benutzeroberfläche soll selbsterklärend und fehlertolerant sein und möglichst wenig (also ideal überhaupt keine)
 Nutzerdokumentation erfordern
 \item Das Programm -- insbesondere die Module für Abstraktion, Speicherung und Verwaltung von Datensätzen (vgl.
-Kernschicht im Grobentwurf) -- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
+Abschnitt \ref{kernschicht} "\nameref{kernschicht}", S. \pageref{kernschicht}) -- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
 Hierbei soll nach Möglichkeit auch das Vorgehen der Testgetriebenen Entwicklung (TDD) erprobt werden.
 \item Dem Nutzer soll es ermöglicht werden, optional zu einem Datensatz auch ein Bild zu speichern
 \item Die in GTK+ vorhandenen Schnittstellen zur Internationalisierung sollen genutzt werden.\footnote{Selbst wenn das
@@ -49,6 +49,8 @@ und mit vernachlässigbar wenig Mehraufwand umsetzbar.}
 \item Änderungen an den Datensätzen sollen im Arbeitsspeicher gehalten und erst mit Senden des Speicherbefehls in das
 Dateisystem geschrieben werden. Wird kein Speicherbefehl gegeben (auch nicht auf Nachfrage beim Verlassen der Anwendung),
 so haben diese Änderungen zu verfallen.
+\item Einzelne Änderungen sollen hierbei auch wieder rückgängig gemacht werden können, solange das Programm nicht
+geschlossen wurde (Strg-Z)
 \item Das Speichern der Datenbankdatei soll auch unter neuem Dateinamen erfolgen können.
 \item Der aktuell angezeigte Datensatz bzw. die aktuell angezeigte Auflistung sollen, wenn möglich, in ein CSV-basiertes
 Format exportierbar sein.
@@ -60,5 +62,34 @@ Ein einfaches, objektorientiertes Domänenmodell, welches obige Anforderungen un
 und Implementierungsdetails visualisiert, kann wie folgt aussehen:
 
 \begin{center}
-\noindent\includegraphics[width=100mm,keepaspectratio]{images/01-domaenenmodell.png}
+\noindent\includegraphics[width=110mm,keepaspectratio]{images/01-domaenenmodell.png}
 \end{center}
+
+Mögliche Erweiterungen dieses Modells für die Zukunft könnten beispielsweise die Katalogisierung der Materialdatensätze
+in einem Kategoriebaum oder das Hinzufügen weitere Metadaten (u.A. auch Bilder) zu einem Datensatz sein.
+
+\newpage
+\subsection{Anwendungsfälle}
+Die Kernanwendungsfälle, welche aus den Anforderungen entnommen werden können sind in folgendem Diagramm dargestellt:
+
+\begin{center}
+\noindent\includegraphics[width=150mm,keepaspectratio]{images/02-anwendungsfaelle.png}
+\end{center}
+
+Bereits hier zeigt sich eine möglicherweise sinnvolle Aufteilung in zwei Ansichten: Eine Such- und Katalogansicht,
+sowie eine Detailansicht für einzelne Datensätze. Somit können sich beispielsweise Suche, Sortierung und Auflistung der
+Materialdatensätze große Teile des Codes teilen und auch die Nutzeroberfläche bleibt in weiten Teilen kohärent und
+für den Nutzer einleuchtend.
+
+Eine Ausnahme stellt die Änderung des Lagerbestands dar: Dieser Anwendungsfall sollte von
+beiden Ansichten aus erreichbar sein, denn der Lagerbestand wird im Vergleich zu allen anderen Teilen des Datensatzes
+wohl mit Abstand am Häufigsten veränderbar sein und sollte daher mit möglichst wenig Aufwand auch aus der Übersichtsliste
+erreichbar sein. Nichtsdestotrotz muss sich der Lagerbestand aber auch aus der Datensatz-Detailansicht heraus verändern
+lassen können, soll diese doch eine vollständige Repräsentation und Manipulation eines einzelnen Datensatzes ermöglichen.
+
+Doch auch das Löschen eines Datensatzes sollte aus beiden Ansichten heraus erreichbar sein. Zum Einen gehört es
+zu einer vollständigen Datensatzmanipulation hinzu, dass ein Datensatz auch gelöscht werden kann, andererseits möchte
+man als Nutzer einer Software nicht immer erst die Detailansicht eines Datensatzes aufrufen, um diesen (oder gar mehrere)
+zu löschen.
+
+Triviale Anwendungsfälle, welche keiner weiteren Erläuterung bedürfen, wurden in diesem Diagramm nicht berücksichtigt.
