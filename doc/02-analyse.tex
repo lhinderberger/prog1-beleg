@@ -21,8 +21,10 @@ Hierbei ist nach klärendem Gespräch auch die Benutzung des Datenbanksystems SQ
 gespeichert werden können.\footnote{Hierbei wird dem Anwender eine Wahl gelassen werden, ob er wirklich speichern, oder
 das Programm ohne Berücksichtigung der vorgenommenen Änderungen verlassen möchte}
 \item Für die Umsetzung der Benutzeroberfläche muss zwingend die Bibliothek GTK+ verwendet werden
-\item Es wird ein modularer Aufbau vorausgesetzt - Das Programm ist in mehrere sinnvolle, einzeln kompilierbare Module
-zu unterteilen\footnote{Dies schließt m.E.n. nicht die Nutzung gemeinsamer Typdefinitionen und Schnittstellen aus}
+\item Es wird ein modularer Aufbau vorausgesetzt - Das Programm ist in mehrere sinnvolle, getrennt kompilierbare Module
+zu unterteilen\footnote{Dies bedeutet m.E.n. eigene make-Targets für jedes Modul und schließt insbesondere nicht die
+Nutzung gemeinsamer Typdefinitionen und Schnittstellen sowie gegenseitige Abhängigkeiten beim Linken der finalen
+Anwendung aus}
 Hierbei sind mindestens drei Module anzufertigen
 \item Quelltexte sind sorgsam zu dokumentieren -- insbesondere ist die Urheberschaft im Programmkopf zu
 kennzeichnen\footnote{Bei der Quellcodedokumentation richte ich mich nach \cite[Kap.4]{Martin:CleanCode}}
@@ -40,7 +42,8 @@ der Aufgabenstellung als sinnvoll und einfach umzusetzen bzw. allgemein als bew�
 \item Die Benutzeroberfläche soll selbsterklärend und fehlertolerant sein und möglichst wenig (also ideal überhaupt keine)
 Nutzerdokumentation erfordern
 \item Das Programm -- insbesondere die Module für Abstraktion, Speicherung und Verwaltung von Datensätzen (vgl.
-Abschnitt \ref{kernschicht} "\nameref{kernschicht}", S. \pageref{kernschicht}) -- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
+Abschnitt \ref{datenabstraktionsschicht} ``\nameref{datenabstraktionsschicht}'', S. \pageref{datenabstraktionsschicht})
+-- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
 Hierbei soll nach Möglichkeit auch das Vorgehen der Testgetriebenen Entwicklung (TDD) erprobt werden.
 \item Dem Nutzer soll es ermöglicht werden, optional zu einem Datensatz auch ein Bild zu speichern
 \item Die in GTK+ vorhandenen Schnittstellen zur Internationalisierung sollen genutzt werden.\footnote{Selbst wenn das
