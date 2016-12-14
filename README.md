@@ -19,6 +19,7 @@ This program links against and might include code of the following third-party l
 ```
 \prog1-beleg
 |--doc - Contains LaTeX sources for the documentation summary mentioned above.
+|--include - Contains public and private include files for the core / data library
 |
 |-CMakeLists.txt - Use this file to build the project using CMake
 |-main.c - "Hello World!"
