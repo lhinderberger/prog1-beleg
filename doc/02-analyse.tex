@@ -18,8 +18,8 @@ löschen sowie einzelne Datensätze anzeigen -- können
 Hierbei ist nach klärendem Gespräch auch die Benutzung des Datenbanksystems SQLite erlaubt.
 \item Der Lagerbestand soll explizit über einen gesonderten Menüpunkt veränderbar sein
 \item Beim Verlassen der Anwendung sollen Daten, die sich während des Programmablaufs geändert werden
-gespeichert werden können.\footnote{Hierbei wird dem Anwender eine Wahl gelassen werden, ob er wirklich speichern, oder
-das Programm ohne Berücksichtigung der vorgenommenen Änderungen verlassen möchte}
+gespeichert werden können.\footnote{Eine kontinuierliche Speicherung ist hierbei nach klärendem Gespräch
+zulässig}
 \item Für die Umsetzung der Benutzeroberfläche muss zwingend die Bibliothek GTK+ verwendet werden
 \item Es wird ein modularer Aufbau vorausgesetzt - Das Programm ist in mehrere sinnvolle, getrennt kompilierbare Module
 zu unterteilen\footnote{Dies bedeutet m.E.n. eigene make-Targets für jedes Modul und schließt insbesondere nicht die
@@ -49,9 +49,6 @@ Hierbei soll nach Möglichkeit auch das Vorgehen der Testgetriebenen Entwicklung
 \item Die in GTK+ vorhandenen Schnittstellen zur Internationalisierung sollen genutzt werden.\footnote{Selbst wenn das
 Programm praktisch gesehen wohl einsprachig bleiben wird, ist dies noch immer der für GTK+-Anwendungen übliche Weg
 und mit vernachlässigbar wenig Mehraufwand umsetzbar.}
-\item Änderungen an den Datensätzen sollen im Arbeitsspeicher gehalten und erst mit Senden des Speicherbefehls in das
-Dateisystem geschrieben werden. Wird kein Speicherbefehl gegeben (auch nicht auf Nachfrage beim Verlassen der Anwendung),
-so haben diese Änderungen zu verfallen.
 \item Einzelne Änderungen sollen hierbei auch wieder rückgängig gemacht werden können, solange das Programm nicht
 geschlossen wurde (Strg-Z)
 \item Das Speichern der Datenbankdatei soll auch unter neuem Dateinamen erfolgen können.
