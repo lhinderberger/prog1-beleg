@@ -68,6 +68,9 @@ Zusätzlich zum Domänenmodell ist hier lediglich die Tabelle ``meta'' neu: In i
 Konfigurations- und Metadaten aller Art gespeichert werden. Vorwiegend wird sie dafür
 verwendet, die Version des Verwendeten Formats zu erfassen, sodass auch mit früheren
 (oder späteren) Versionen der Anwendung erstellte Datenbanken verarbeitet werden können.
+Die Inhalte dieser Tabelle werden nicht vollumfänglich über die Schnittstelle der
+Datenabstraktionsschicht zur Verfügung gestellt bzw. veränderbar gemacht, können jedoch selektiv
+und restriktiv zur Verfügung gestellt werden. (z.B. Datenbankversion als schreibgeschütztes Feld).
 
 Der zum Aufbau dieser Datenbank erforderliche SQL-Code befindet sich bei den Quellcodes
 zur Datenabstraktionsschicht.

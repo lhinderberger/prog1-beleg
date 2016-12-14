@@ -1,1 +1,26 @@
 \section{Implementierung}
+Einige technische Fragen klärten sich erst im Verlaufe des Feinentwurfes bzw. der Implementierung.
+Auf sie wird im Folgenden näher eingegangen
+
+\subsection{Fehlerbehandlung}
+Während in höheren Programmiersprachen wie Java oder C\# die Fehlerbehandlung via Exceptions standardisiert, stabil
+und somit naheliegend ist, kann dies für C++ nicht uneingeschränkt\footnote{Zwar existiert für C++ eine Fehlerbehandlung
+via Exceptions, allerdings ist diese für Bibliotheken nicht ohne Einschränkungen praktikabel, da Schnittstelle und
+Verhalten von C++-Exceptions nicht im Standard festgeschrieben und somit vom verwendeten Compiler abhängig sind.
+Da auch C++-Binärschnittstellen uneinheitlich sind, werden in der Praxis meist auch in C++ geschriebene
+Bibliotheken in C-Wrapper verpackt.} und für C-Programme überhaupt nicht behauptet werden.
+
+In der Praxis trifft man bei der Fehlerbehandlung in C-Programmen und -Bibliotheken auf verschiedenste Lösungen, vom
+simplem Programmabbruch, über die Prüfung von Rückgabewerten bis hin zu Nachbauten von Exception-Mechanismen.
+Während letzteres zwar großen Charme hat, ist dies für Bibliotheken -- besonders wenn diese in Binärform vorliegen
+sollen -- aufgrund technischer Restriktionen (mangelnde Kompatiblität zwischen unterschiedlichen
+longjmp-Implementierungen) nicht praktikabel. Gleiches gilt aus Gründen der Nutzerfreundlichkeit für den simplen
+Programmabbruch.
+
+Ich habe mich daher für die Fehlerbehandlung an der C-Standardbibliothek orientiert, welche die Rückgabe eines
+Fehlerwerts, das Setzen einer \lstinline{errno}-Variablen und das Bereitstellen eines vertiefenden Error-Strings vorsieht.
+Eventuellen Implementierungen von Drittparteien wird hierbei über einen privaten Header das eigene Setzen eines
+dynamischen Error Strings für den \lstinline{pb_errno}-Wert \lstinline{PB_E_CUSTOM} ermöglicht.
+
+\subsection{Abfrageschnittstelle}
+TODO
