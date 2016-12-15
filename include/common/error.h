@@ -5,6 +5,7 @@
 #ifndef PB_ERROR
 #define PB_ERROR
 
+#define PB_E_NOT_IMPLEMENTED -1
 #define PB_E_CUSTOM 951123
 
 /**

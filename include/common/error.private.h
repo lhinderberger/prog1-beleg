@@ -7,18 +7,22 @@
 
 #include "error.h"
 
+extern int pb_errno_v;
+
 /**
  * Sets the error state.
  * Note: This will set the custom error string to a generic error string if pb_errno is PB_ERR_CUSTOM because
  * you are supposed to use pb_custom_error for custom errors.
  * @param pb_errno The error type to be written to pb_errno.
+ * @return pb_errno
  */
-void pb_error(int pb_errno);
+int pb_error(int pb_errno);
 
 /**
  * Sets the error state to a custom error and sets a custom error string.
  * Exclusively use this function instead of pb_error(PB_ERR_CUSTOM) to trigger custom errors!
+ * @return PB_E_CUSTOM
  */
-void pb_custom_error(const char * err_string);
+int pb_custom_error(const char * err_string);
 
 #endif
