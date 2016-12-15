@@ -22,12 +22,14 @@ Standardschnittstelle hinaus geht, höheren Schichten zur Verfügung.
 \label{datenabstraktionsschicht}
 Die Datenabstraktionsschicht stellt die unterste Schicht der Anwendung dar.
 Ihre Aufgabe ist die Umsetzung einer prinzipiell format- und speichermedienunabhängigen
-CRUD\footnote{Create, Read/Query, Update, Delete}-Schittstelle, welche alle Datensätze
+CRUD\footnote{Create, Read, Update, Delete}-Schittstelle, welche alle Datensätze
 (und Operationen darauf) innerhalb einer Datenbank abbilden kann.
 
 Hierzu gehören auch abstrakte Query-Operationen (prepared Statements), die im
 einfachsten Fall schlicht an die zugrunde liegende SQL-Bibliothek weitergegeben
-werden.
+werden. Hierbei kommt in diesem Fall begünstigend hinzu, dass die vorliegende Datenbank
+bisher ohnehin nur Integer, String und Blob-Werte erfasst, man also die Schnittstelle deutlich
+vereinfachen kann.
 
 Operationen der Datenabstraktionsschicht schreiben / lesen direkt (bzw. unerheblich
 gepuffert) in die Datenbank. Hierbei ist auf Nichtverletzung des ACID-Prinzips\footnote{Siehe
@@ -37,8 +39,8 @@ zugrundeliegende Datenbank erreicht.
 
 \subsubsection{Anwendungslogikschicht}
 Die Anwendungslogikschicht stellt der Darstellungsschicht auf hoher Abstraktionsebene Such-, Abfrage-
-und Sortierfunktionen sowie eine Transaktionsverwaltung und einige Helferfunktionen, die von der
-Benutzeroberfläche unabhängig sind (und bleiben sollen) zur Verfügung.
+und Sortierfunktionen sowie Eingabevalidierung für alle bisher definierten Anwendungsfälle
+und einige Helferfunktionen, die von der Benutzeroberfläche unabhängig sind (und bleiben sollen), zur Verfügung.
 
 \subsubsection{Darstellungsschicht}
 In der Darstellungsschicht werden schließlich Nutzereingaben entgegengenommen und
@@ -51,10 +53,13 @@ aufzubauen und zu kompilieren, um dann verschiedenste Arten von Darstellungsschi
 nur noch gegen diese Bibliothek zu linken.
 
 \subsection{Schnittstellenentwurf}
-Da sich die objektorientierte Natur der UML nur schwer vollständig auf ein C-Programm
-übertragen lässt, wird an dieser Stelle auf einen Schnittstellenentwurf und ein
-UML-Klassendiagramm verzichtet. Es wird auf die entsprechenden Header-Files der
-jeweiligen Module verwiesen, welche problemlos im Quellcodepaket auffindbar sind.
+Ergebnis des Schnittstellenentwurfs sind die entsprechenden Header-Files der jeweiligen Module,
+im Quellcodepaket im ordner \lstinline{include} auffindbar sind.
+
+Aus der Schnittstellendokumentation, welche ebenda zu finden ist, ergeben sich auch Erklärungen zu
+den Designentscheidungen, die während des Schnittstellenentwurfs getroffen wurden.
+Ich verzichte an dieser Stelle auf eine Wiederholung dieser Schnittstellendokumentation und verweise
+direkt auf die jeweiligen Header-Files.
 
 \subsection{Datenbankentwurf}
 Die relationale Datenbank, welche als Dateiformat auserkoren wurde, ist äußerst

@@ -7,6 +7,10 @@
 
 typedef pb_database*;
 
+//TODO: Transactions
+//TODO: Create items from query result
+//TODO: Save items
+
 /**
  * Opens or creates a database.
  * @param filename The unambiguous filename of the database, i.e. which database shall be
