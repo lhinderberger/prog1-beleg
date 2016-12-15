@@ -7,10 +7,6 @@
 
 typedef pb_database*;
 
-//TODO: Transactions
-//TODO: Create items from query result
-//TODO: Save items
-
 /**
  * Opens or creates a database.
  * @param filename The unambiguous filename of the database, i.e. which database shall be
@@ -38,6 +34,30 @@ int pb_migrate_database(pb_database * db);
  * otherwise data loss may or may not occur!
  */
 void pb_close_database(pb_database * db);
+
+/**
+ * Executes the given SQL statement.
+ * @return 0 on success, otherwise pb_errno().
+ */
+int pb_execute_sql(pb_database * db, const char * sql);
+
+/**
+ * Begins a new SQL transaction.
+ * @return 0 on success, otherwise pb_errno().
+ */
+int pb_begin_transaction(pb_database * db);
+
+/**
+ * Commits the current SQL transaction.
+ * @return 0 on success, otherwise pb_errno().
+ */
+int pb_commit_transaction(pb_database * db);
+
+/**
+ * Rolls back the current SQL transaction.
+ * @return 0 on success, otherwise pb_errno().
+ */
+int pb_rollback_transaction(pb_database * db);
 
 /**
  * Retrieves the most recent database version the currently loaded library can handle.
