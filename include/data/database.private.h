@@ -10,7 +10,7 @@
 #include "database.h"
 
 struct pb_database {
-    sqlite3 * db;
+    sqlite3 * connection;
 };
 
 /**

@@ -5,6 +5,7 @@
 #ifndef PB_ERROR_PRIVATE
 #define PB_ERROR_PRIVATE
 
+#include <sqlite3.h>
 #include "error.h"
 
 #define PB_CUSTOM_ERR_STR_LENGTH 512
@@ -28,5 +29,17 @@ int pb_error(int pb_errno);
  * @return PB_E_CUSTOM
  */
 int pb_custom_error(const char * err_string);
+
+/**
+ * Sets the error state to PB_E_DB_BACKEND and prints the SQLite error message to stderr.
+ * @return PB_E_DB_BACKEND
+ */
+int pb_sqlite_error(sqlite3 * db);
+
+/**
+ * Prints an error message to stderr, containing details about what failed in SQLite but not setting
+ * pb_errno.
+ */
+void pb_sqlite_warning(sqlite3 * db);
 
 #endif

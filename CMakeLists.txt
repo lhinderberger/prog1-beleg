@@ -9,6 +9,7 @@ include(FindPkgConfig)
 enable_testing()
 
 # Configure compiler
+add_definitions(-Wall)
 set(CMAKE_C_STANDARD 99)
 
 # Set global include directory
@@ -18,7 +19,7 @@ include_directories(include/)
 pkg_check_modules(GTK gtk+-3.0)
 
 # Define core library target
-set(CORE_SOURCE_FILES src/core.c src/common/error.c src/data/database.c)
+set(CORE_SOURCE_FILES src/core.c src/common/error.c src/data/database.c src/data/query.c)
 add_library(pb-core SHARED ${CORE_SOURCE_FILES})
 target_include_directories(pb-core PUBLIC)
 target_link_libraries(pb-core sqlite3)

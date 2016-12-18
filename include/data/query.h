@@ -7,7 +7,7 @@
 
 #include "database.h"
 
-typedef pb_query*;
+typedef struct pb_query pb_query;
 
 /* In the standard implementation, this interface provides a thin wrapper around SQLite's
  * prepared statements, hiding all technical details of the database implementation while
@@ -49,9 +49,10 @@ int pb_query_bind_null(pb_query * query, int param_index);
 int pb_query_bind_string(pb_query * query, int param_index, const char * value, int value_bytes);
 
 /**
- * Retrieve the next data row from query.
+ * Execute query / Retrieve the next data row from query.
  * Use pb_query_column_* functions to retrieve column values.
- * @return Zero on success, otherwise pb_errno().
+ * @return One while the statement remains valid (row obtained / executed), zero when done or on error.
+ *  On error, also pb_errno() will be set.
  */
 int pb_query_step(pb_query * query);
 
@@ -72,11 +73,10 @@ const void * pb_query_column_int(pb_query * query, int column_index, int * bytes
 
 /**
  * Retrieve a String value from the current result row.
- * @param bytes_out Outgoing. The number of bytes in the result.
  * @return NULL on error (and pb_errno will be set) or when empty, otherwise an array of characters, which has to be
  *  instantly evaluated, as it will be freed or overwritten by subsequent calls to this API.
  */
-const char * pb_query_column_string(pb_query * query, int column_index, int * bytes_out);
+const char * pb_query_column_string(pb_query * query, int column_index);
 
 /**
  * Resets a query so that it can be executed again.

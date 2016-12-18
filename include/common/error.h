@@ -6,8 +6,12 @@
 #define PB_ERROR
 
 #define PB_E_NOT_IMPLEMENTED    -1
-#define PB_E_FOPEN              -2
+#define PB_E_DB_BACKEND         -2
 #define PB_E_VERSION            -3
+#define PB_E_EXISTS             -4
+#define PB_E_MALLOC             -5
+#define PB_E_NULLPTR            -6
+#define PB_E_RANGE              -7
 #define PB_E_CUSTOM             951123
 
 /**
@@ -16,6 +20,11 @@
  *  to retrieve a descriptive error string via pb_error_str().
  */
 int pb_errno();
+
+/**
+ * Clears pb_errno and resets the custom error string.
+ */
+void pb_clear_error();
 
 /**
  * Retrieves a descriptive error string.

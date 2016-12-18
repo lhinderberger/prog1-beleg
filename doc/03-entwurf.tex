@@ -61,6 +61,11 @@ den Designentscheidungen, die während des Schnittstellenentwurfs getroffen wurd
 Ich verzichte an dieser Stelle auf eine Wiederholung dieser Schnittstellendokumentation und verweise
 direkt auf die jeweiligen Header-Files.
 
+Die Funktionen und Parameter zur Migration von Datenbanken sind in dieser ersten Version der Anwendung
+vollkommen funktionslos. Dennoch müssen sie Teil einer gut geplanten Schnittstelle sein, um spätere
+Änderungen am Datenformat zu ermöglichen, ohne die Kompatiblität der Kernbibliothek zu bereits existierender
+Software verlieren.
+
 \subsection{Datenbankentwurf}
 Die relationale Datenbank, welche als Dateiformat auserkoren wurde, ist äußerst
 einfach aufgebaut:

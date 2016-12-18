@@ -12,8 +12,7 @@ char pb_custom_err_str[512];
 
 int pb_init() {
     /* Initialize global error variables */
-    pb_errno_v = 0;
-    memset(pb_custom_err_str, 0, PB_CUSTOM_ERR_STR_LENGTH);
+    pb_clear_error();
 
     return 0;
 }
