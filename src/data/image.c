@@ -5,6 +5,8 @@
 
 #include <stdlib.h>
 #include <memory.h>
+#include <data/query.private.h>
+#include <data/database.private.h>
 
 #include "common/error.private.h"
 #include "data/image.h"
@@ -13,27 +15,27 @@
 void * pb_image_retrieve(pb_database * db, int id, int * bytes_out) {
     pb_clear_error();
 
-    if (!db | !bytes_out) {
+    if (!db || !bytes_out) {
         pb_error(PB_E_NULLPTR);
         return NULL;
     }
 
     /* Prepare query to lookup image */
-    pb_query * query = pb_query_prepare(db, "SELECT data FROM images WHERE id = :id" , -1);
+    pb_query * query = pb_query_prepare(db, "SELECT bytes FROM images WHERE id = :id" , -1);
     if (!query)
         return NULL;
 
     /* Bind id parameter */
-    if (!pb_query_bind_int(query, 1, id)) {
+    if (pb_query_bind_int(query, 1, id) != 0) {
         pb_query_discard(query);
         return NULL;
     }
 
     /* Execute */
     if (!pb_query_step(query)) {
+        pb_query_discard(query);
         if (!pb_errno())
             pb_error(PB_E_NOTFOUND);
-        pb_query_discard(query);
         return NULL;
     }
 
@@ -62,13 +64,76 @@ void * pb_image_retrieve(pb_database * db, int id, int * bytes_out) {
 
 int pb_image_delete(pb_database * db, int id) {
     pb_clear_error();
-    return pb_error(PB_E_NOT_IMPLEMENTED);
+
+    if (!pb_write_possible(db))
+        return pb_errno();
+
+    /* Prepare query to delete image */
+    pb_query * query = pb_query_prepare(db, "DELETE FROM images WHERE id = :id" , -1);
+    if (!query)
+        return pb_errno();
+
+    /* Bind id parameter */
+    if (pb_query_bind_int(query, 1, id) != 0) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Execute */
+    if (!pb_query_step(query) && pb_errno()) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Clean up and return */
+    pb_query_discard(query);
+    return 0;
 }
 
-int pb_image_save(pb_database * db, int id, int overwrite_existing, void * data, int data_bytes) {
+int pb_image_save(pb_database * db, int id, int update, void * data, int data_bytes) {
     pb_clear_error();
-    pb_error(PB_E_NOT_IMPLEMENTED);
-    return 0;
+
+    if (!pb_write_possible(db))
+        return 0;
+
+    /* Prepare query to save image */
+    pb_query * query = NULL;
+    if (id)
+        query = pb_query_prepare(db, update ? "UPDATE images SET bytes = :data WHERE id = :id" : "INSERT INTO images(bytes, id) VALUES(:data, :id)" , -1);
+    else
+        query = pb_query_prepare(db, "INSERT INTO images(bytes) VALUES(:data)", -1);
+    if (!query)
+        return 0;
+
+    /* Bind data parameter */
+    if (data && data_bytes > 0) {
+        if (pb_query_bind_blob(query, 1, data, data_bytes) != 0) {
+            pb_query_discard(query);
+            return pb_errno();
+        }
+    }
+    else {
+        if (pb_query_bind_null(query, 1) != 0) {
+            pb_query_discard(query);
+            return pb_errno();
+        }
+    }
+
+    /* Bind id parameter */
+    if (id && pb_query_bind_int(query, 2, id) != 0) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Execute */
+    if (!pb_query_step(query) && pb_errno()) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Clean up and return image id */
+    pb_query_discard(query);
+    return id ? id : (int)sqlite3_last_insert_rowid(query->connection);
 }
 
 void pb_image_free(void * blob) {

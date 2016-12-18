@@ -40,6 +40,18 @@ pb_query * pb_query_prepare(pb_database * db, const char * sql, int sql_bytes) {
     return query;
 }
 
+int pb_query_bind_blob(pb_query * query, int param_index, void * value, int value_bytes) {
+    pb_clear_error();
+
+    if (query_corrupted(query) || !value)
+        return pb_error(PB_E_NULLPTR);
+
+    if (sqlite3_bind_blob(query->statement, param_index, value, value_bytes, NULL) != SQLITE_OK)
+        return pb_sqlite_error(query->connection);
+
+    return 0;
+}
+
 int pb_query_bind_int(pb_query * query, int param_index, int value) {
     pb_clear_error();
 

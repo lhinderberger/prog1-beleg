@@ -29,6 +29,12 @@ typedef struct pb_query pb_query;
 pb_query * pb_query_prepare(pb_database * db, const char * sql, int sql_bytes);
 
 /**
+ * Binds a Blob value to a parameter.
+ * @return Zero on success, otherwise pb_errno().
+ */
+int pb_query_bind_blob(pb_query * query, int param_index, void * value, int value_bytes);
+
+/**
  * Binds an Integer value to a parameter.
  * @return Zero on success, otherwise pb_errno().
  */

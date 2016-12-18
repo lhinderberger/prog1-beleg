@@ -19,4 +19,10 @@ struct pb_database {
  */
 int pb_set_database_version(pb_database * db, unsigned int version);
 
+/**
+ * Ensure writing to the database is possible
+ * @return 1 when possible, otherwise 0 and pb_errno() will be set.
+ */
+int pb_write_possible(pb_database * db);
+
 #endif

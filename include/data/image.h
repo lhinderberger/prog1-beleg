@@ -19,14 +19,14 @@ void * pb_image_retrieve(pb_database * db, int id, int * bytes_out);
  * Update or create an image, persistent in the database.
  * This call can be used from within a transaction.
  * @param id Set to 0 to auto-assign an image id, otherwise the preferred image id (or the id of the image to be
- *  updated, if overwrite_existing == 1)
- * @param overwrite_existing If this is set to 1, existing images are allowed to be overwritten. Otherwise
- *  this function will fail when encountering an existing image.
+ *  updated, if update == 1)
+ * @param update If this is set to 1, an UPDATE query will be performed to overwrite an existing image.
+ *  Otherwise this function will fail when encountering an existing image.
  * @param data The image binary blob
  * @param data_bytes The length of the binary blob in bytes.
  * @return Zero on failure and pb_errno is set, otherwise the image id.
  */
-int pb_image_save(pb_database * db, int id, int overwrite_existing, void * data, int data_bytes);
+int pb_image_save(pb_database * db, int id, int update, void * data, int data_bytes);
 
 /**
  * Deletes the image specified by id from the database.

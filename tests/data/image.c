@@ -22,7 +22,7 @@ int main() {
     puts("\nCreate image");
     const char * helloworld = "Hello World!"; // We'll cheat here and use a string instead of an image.
     int len = (int)strlen(helloworld) - 1; // We deliberately leave out the NULL terminator here for testing purposes.
-    int image_id = pb_image_save(db, 0, 0, &helloworld, len);
+    int image_id = pb_image_save(db, 0, 0, (void*)helloworld, len);
     TEST_ASSERT(image_id != 0);
     printf("image_id: %d\n", image_id);
 
@@ -48,7 +48,7 @@ int main() {
 
     pb_clear_error();
     pb_set_database_version(db, pb_get_current_version() + 1);
-    TEST_ASSERT(!pb_image_delete(db, image_id));
+    TEST_ASSERT(pb_image_delete(db, image_id));
     TEST_ASSERT(pb_errno() == PB_E_VERSION)
     pb_clear_error();
     TEST_ASSERT(!pb_image_save(db, 0, 0, &helloworld, len))
@@ -56,7 +56,7 @@ int main() {
 
     pb_clear_error();
     pb_set_database_version(db, pb_get_current_version() - 1);
-    TEST_ASSERT(!pb_image_delete(db, image_id));
+    TEST_ASSERT(pb_image_delete(db, image_id));
     TEST_ASSERT(pb_errno() == PB_E_VERSION)
     pb_clear_error();
     TEST_ASSERT(!pb_image_save(db, 0, 0, &helloworld, len))

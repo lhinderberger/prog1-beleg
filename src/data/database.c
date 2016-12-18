@@ -16,11 +16,11 @@ const char * init_sql =
         "value TEXT"
     ");"
     "CREATE TABLE images("
-        "id INT PRIMARY KEY NOT NULL,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
         "bytes BLOB"
     ");"
     "CREATE TABLE material_items("
-        "id INT PRIMARY KEY NOT NULL,"
+        "id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
         "name CHAR(64),"
         "article_no CHAR(32),"
         "image_id INT,"
@@ -79,7 +79,7 @@ pb_database * pb_open_database(const char * filename, int create, int auto_migra
     /* Initialize database if freshly created */
     if (create) {
         if (
-            pb_execute_sql(db, init_sql) != 0 &&
+            pb_execute_sql(db, init_sql) != 0 ||
             pb_set_database_version(db, pb_get_current_version()) != 0
         ){
             pb_close_database(db);
@@ -223,4 +223,18 @@ int pb_set_database_version(pb_database * db, unsigned int version) {
     /* Clean up and return */
     pb_query_discard(query);
     return 0;
+}
+
+int pb_write_possible(pb_database * db) {
+    if (!db) {
+        pb_error(PB_E_NULLPTR);
+        return 0;
+    }
+
+    if (pb_get_database_version(db) != pb_get_current_version()) {
+        pb_error(PB_E_VERSION);
+        return 0;
+    }
+
+    return 1;
 }

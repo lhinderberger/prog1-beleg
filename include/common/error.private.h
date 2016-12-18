@@ -16,6 +16,7 @@ extern char pb_custom_err_str[PB_CUSTOM_ERR_STR_LENGTH];
 
 /**
  * Sets the error state.
+ * Warning: Make sure this is the very last pb_* call in your function, otherwise pb_errno might be reset.
  * Note: This will set the custom error string to a generic error string if pb_errno is PB_ERR_CUSTOM because
  * you are supposed to use pb_custom_error for custom errors.
  * @param pb_errno The error type to be written to pb_errno.
@@ -25,6 +26,7 @@ int pb_error(int pb_errno);
 
 /**
  * Sets the error state to a custom error and sets a custom error string.
+ * Warning: Make sure this is the very last pb_* call in your function, otherwise pb_errno might be reset.
  * Exclusively use this function instead of pb_error(PB_ERR_CUSTOM) to trigger custom errors!
  * @return PB_E_CUSTOM
  */
@@ -32,6 +34,7 @@ int pb_custom_error(const char * err_string);
 
 /**
  * Sets the error state to PB_E_DB_BACKEND and prints the SQLite error message to stderr.
+ * Warning: Make sure this is the very last pb_* call in your function, otherwise pb_errno might be reset.
  * @return PB_E_DB_BACKEND
  */
 int pb_sqlite_error(sqlite3 * db);
