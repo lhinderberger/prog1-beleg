@@ -5,6 +5,8 @@
 #ifndef PB_IMAGE
 #define PB_IMAGE
 
+#include "database.h"
+
 /**
  * Retrieve an image binary Blob from the database.
  * @param bytes_out Outgoing. The number of bytes in the result.
@@ -16,13 +18,15 @@ void * pb_image_retrieve(pb_database * db, int id, int * bytes_out);
 /**
  * Update or create an image, persistent in the database.
  * This call can be used from within a transaction.
+ * @param id Set to 0 to auto-assign an image id, otherwise the preferred image id (or the id of the image to be
+ *  updated, if overwrite_existing == 1)
+ * @param overwrite_existing If this is set to 1, existing images are allowed to be overwritten. Otherwise
+ *  this function will fail when encountering an existing image.
  * @param data The image binary blob
  * @param data_bytes The length of the binary blob in bytes.
- * @param update If this is set to 1, the function attempts to update an existing image with the same id. Otherwise
- *  it attempts to create a new image, either auto-assigning an id (if item's id is 0) or attempting to use item's id.
  * @return Zero on failure and pb_errno is set, otherwise the image id.
  */
-int pb_image_save(pb_database * db, int id, void * data, int data_bytes, int update);
+int pb_image_save(pb_database * db, int id, int overwrite_existing, void * data, int data_bytes);
 
 /**
  * Deletes the image specified by id from the database.
@@ -32,7 +36,7 @@ int pb_image_save(pb_database * db, int id, void * data, int data_bytes, int upd
 int pb_image_delete(pb_database * db, int id);
 
 /**
- * Frees an image binary blob previosly obtained via pb_image_retrieve()
+ * Frees an image binary blob previously obtained via pb_image_retrieve()
  * @param blob
  */
 void pb_image_free(void * blob);

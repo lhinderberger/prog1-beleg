@@ -99,6 +99,12 @@ pb_database * pb_open_database(const char * filename, int create, int auto_migra
             pb_error(PB_E_VERSION);
             return NULL;
         }
+        else if (version < pb_get_current_version()) {
+            if (auto_migrate && pb_migrate_database(db) != 0) {
+                pb_close_database(db);
+                return NULL;
+            }
+        }
     }
 
     /* And we're done */
@@ -106,11 +112,13 @@ pb_database * pb_open_database(const char * filename, int create, int auto_migra
 }
 
 int pb_migrate_database(pb_database * db) {
+    pb_clear_error();
     return 0; // Always succeed. We're on the lowest version, cannot load higher versions, so
               // there's no possibility to migrate anything.
 }
 
 void pb_close_database(pb_database * db) {
+    pb_clear_error();
     if (!db)
         return;
 
@@ -125,6 +133,7 @@ void pb_close_database(pb_database * db) {
 }
 
 int pb_execute_sql(pb_database * db, const char * sql) {
+    pb_clear_error();
     if (!db || !sql || !db->connection)
         return pb_error(PB_E_NULLPTR);
 
@@ -135,18 +144,22 @@ int pb_execute_sql(pb_database * db, const char * sql) {
 }
 
 int pb_begin_transaction(pb_database * db) {
+    pb_clear_error();
     return pb_error(PB_E_NOT_IMPLEMENTED);
 }
 
 int pb_commit_transaction(pb_database * db) {
+    pb_clear_error();
     return pb_error(PB_E_NOT_IMPLEMENTED);
 }
 
 int pb_rollback_transaction(pb_database * db) {
+    pb_clear_error();
     return pb_error(PB_E_NOT_IMPLEMENTED);
 }
 
 unsigned int pb_get_current_version() {
+    pb_clear_error();
     return 1;
 }
 
@@ -185,6 +198,8 @@ unsigned int pb_get_database_version(pb_database * db) {
 }
 
 int pb_set_database_version(pb_database * db, unsigned int version) {
+    pb_clear_error();
+
     /* Build version string */
     char version_str[32];
     if (sprintf(version_str, "%u", version) != 1)

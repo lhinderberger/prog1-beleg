@@ -10,11 +10,7 @@
 int main() {
     TEST_INIT();
 
-    puts("Obtain temporary filename");
-    char * temp_filename = tempnam(NULL, "pb_"); // Dangerous in production, okay in testing
-    if (!temp_filename)
-        exit_misc_error("ERROR: Could not retrieve temporary file name.");
-    printf("Temporary file name: %s\n", temp_filename);
+    const char * temp_filename = get_temp_filename();
 
     puts("\nOpening non-existing database should fail");
     pb_database * db = NULL;

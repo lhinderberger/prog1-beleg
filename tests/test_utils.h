@@ -17,6 +17,8 @@ void exit_misc_error(const char * message);
 // Exits the test displaying the error message matching a specific pb_errno
 void exit_pb_error(int pb_errno);
 
+// Returns a temporary file name with error handling and debug output.
+const char * get_temp_filename();
 
 
 /* ===== Macroes ===== */

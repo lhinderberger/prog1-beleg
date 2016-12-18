@@ -40,7 +40,33 @@ pb_query * pb_query_prepare(pb_database * db, const char * sql, int sql_bytes) {
     return query;
 }
 
+int pb_query_bind_int(pb_query * query, int param_index, int value) {
+    pb_clear_error();
+
+    if (query_corrupted(query))
+        return pb_error(PB_E_NULLPTR);
+
+    if (sqlite3_bind_int(query->statement, param_index, value) != SQLITE_OK)
+        return pb_sqlite_error(query->connection);
+
+    return 0;
+}
+
+int pb_query_bind_null(pb_query * query, int param_index) {
+    pb_clear_error();
+
+    if (query_corrupted(query))
+        return pb_error(PB_E_NULLPTR);
+
+    if (sqlite3_bind_null(query->statement, param_index) != SQLITE_OK)
+        return pb_sqlite_error(query->connection);
+
+    return 0;
+}
+
 int pb_query_bind_string(pb_query * query, int param_index, const char * value, int value_bytes) {
+    pb_clear_error();
+
     if (query_corrupted(query) || !value)
         return pb_error(PB_E_NULLPTR);
 
@@ -50,22 +76,9 @@ int pb_query_bind_string(pb_query * query, int param_index, const char * value, 
     return 0;
 }
 
-const char * pb_query_column_string(pb_query * query, int column_index) {
+int pb_query_step(pb_query * query) {
     pb_clear_error();
 
-    if (query_corrupted(query)) {
-        pb_error(PB_E_NULLPTR);
-        return NULL;
-    }
-
-    const char * column = (const char*)sqlite3_column_text(query->statement, column_index);
-    if (!column)
-        pb_sqlite_error(query->connection);
-
-    return column;
-}
-
-int pb_query_step(pb_query * query) {
     if (query_corrupted(query))
         return pb_error(PB_E_NULLPTR);
 
@@ -80,7 +93,72 @@ int pb_query_step(pb_query * query) {
     }
 }
 
+const void * pb_query_column_blob(pb_query * query, int column_index, int * bytes_out) {
+    pb_clear_error();
+
+    if (query_corrupted(query)) {
+        pb_error(PB_E_NULLPTR);
+        return NULL;
+    }
+
+    // Do not change the order of the following sqlite calls! (ref SQLite documentation)
+    const void * data = sqlite3_column_blob(query->statement, column_index);
+    if (!data) {
+        pb_sqlite_error(query->connection);
+        return NULL;
+    }
+    *bytes_out = sqlite3_column_bytes(query->statement, column_index);
+
+    return data;
+}
+
+int pb_query_column_int(pb_query * query, int column_index) {
+    pb_clear_error();
+
+    if (query_corrupted(query)) {
+        pb_error(PB_E_NULLPTR);
+        return 0;
+    }
+
+    int result = sqlite3_column_int(query->statement, column_index);
+    if (!result && sqlite3_errcode(query->connection) != SQLITE_OK)
+        pb_sqlite_error(query->connection);
+
+    return result;
+}
+
+const char * pb_query_column_string(pb_query * query, int column_index) {
+    pb_clear_error();
+
+    if (query_corrupted(query)) {
+        pb_error(PB_E_NULLPTR);
+        return NULL;
+    }
+
+    const char * column = (const char*)sqlite3_column_text(query->statement, column_index);
+    if (!column) {
+        pb_sqlite_error(query->connection);
+        return NULL;
+    }
+
+    return column;
+}
+
+int pb_query_reset(pb_query * query) {
+    pb_clear_error();
+
+    if (query_corrupted(query))
+        return pb_error(PB_E_NULLPTR);
+
+    if (sqlite3_reset(query->statement) != SQLITE_OK)
+        return pb_sqlite_error(query->connection);
+
+    return 0;
+}
+
 void pb_query_discard(pb_query * query) {
+    pb_clear_error();
+
     if (!query)
         return;
 

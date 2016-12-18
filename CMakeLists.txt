@@ -19,7 +19,7 @@ include_directories(include/)
 pkg_check_modules(GTK gtk+-3.0)
 
 # Define core library target
-set(CORE_SOURCE_FILES src/core.c src/common/error.c src/data/database.c src/data/query.c)
+set(CORE_SOURCE_FILES src/core.c src/common/error.c src/data/database.c src/data/query.c src/data/image.c)
 add_library(pb-core SHARED ${CORE_SOURCE_FILES})
 target_include_directories(pb-core PUBLIC)
 target_link_libraries(pb-core sqlite3)
@@ -38,3 +38,7 @@ target_link_libraries(test-custom-error pb-core)
 add_executable(test-database tests/data/database.c tests/test_utils.c)
 add_test(test-database test-database)
 target_link_libraries(test-database pb-core)
+
+add_executable(test-image tests/data/image.c tests/test_utils.c)
+add_test(test-image test-image)
+target_link_libraries(test-image pb-core)

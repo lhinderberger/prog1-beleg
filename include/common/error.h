@@ -12,6 +12,7 @@
 #define PB_E_MALLOC             -5
 #define PB_E_NULLPTR            -6
 #define PB_E_RANGE              -7
+#define PB_E_NOTFOUND           -8
 #define PB_E_CUSTOM             951123
 
 /**

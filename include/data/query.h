@@ -69,7 +69,7 @@ const void * pb_query_column_blob(pb_query * query, int column_index, int * byte
  * @return Returns the Integer value read at the current row/column.
  *  When an error occurs, pb_errno will be set and the function is guaranteed to return 0 in that case.
  */
-const void * pb_query_column_int(pb_query * query, int column_index, int * bytes_out);
+int pb_query_column_int(pb_query * query, int column_index);
 
 /**
  * Retrieve a String value from the current result row.

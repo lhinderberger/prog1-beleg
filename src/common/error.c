@@ -49,6 +49,7 @@ const char * pb_error_str(int pb_errno) {
         case PB_E_MALLOC:     return "Error allocating memory";
         case PB_E_RANGE:      return "Argument / variable / query result out of range";
         case PB_E_NULLPTR:    return "Program corrupted: Null pointer passed to pb-core!";
+        case PB_E_NOTFOUND:   return "The requested entity could not be found!";
 
         // We do not want to return empty error strings.
         case PB_E_CUSTOM:   return (pb_custom_err_str[0]) ? pb_custom_err_str : fallback_msg;
