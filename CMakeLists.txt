@@ -18,9 +18,10 @@ include_directories(include/)
 pkg_check_modules(GTK gtk+-3.0)
 
 # Define core library target
-set(CORE_SOURCE_FILES src/core.c src/common/error.c)
+set(CORE_SOURCE_FILES src/core.c src/common/error.c src/data/database.c)
 add_library(pb-core SHARED ${CORE_SOURCE_FILES})
 target_include_directories(pb-core PUBLIC)
+target_link_libraries(pb-core sqlite3)
 
 # Define frontend target
 set(FRONTEND_SOURCE_FILES main.c)
@@ -29,6 +30,10 @@ target_include_directories(pb-frontend PUBLIC ${GTK_INCLUDE_DIRS})
 target_link_libraries(pb-frontend ${GTK_LIBRARIES})
 
 # Define tests
-add_executable(pb-custom-error tests/common/custom_error.c tests/test_utils.c)
-add_test(pb-custom-error pb-custom-error)
-target_link_libraries(pb-custom-error pb-core)
+add_executable(test-custom-error tests/common/custom_error.c tests/test_utils.c)
+add_test(test-custom-error test-custom-error)
+target_link_libraries(test-custom-error pb-core)
+
+add_executable(test-database tests/data/database.c tests/test_utils.c)
+add_test(test-database test-database)
+target_link_libraries(test-database pb-core)

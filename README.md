@@ -14,6 +14,7 @@ commercial, industrial or other real-life environment. Do not distribute this so
 This program links against and might include code of the following third-party libraries:
 
 - GTK+ 3 (LGPL, https://www.gtk.org)
+- SQLite (Public Domain, https://sqlite.org)
 
 ## Structure
 ```

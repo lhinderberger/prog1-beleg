@@ -5,7 +5,7 @@
 #ifndef PB_DATABASE
 #define PB_DATABASE
 
-typedef pb_database*;
+typedef struct pb_database pb_database;
 
 /**
  * Opens or creates a database.

@@ -7,7 +7,11 @@
 
 #include "error.h"
 
+#define PB_CUSTOM_ERR_STR_LENGTH 512
+
+// Global variables are all defined and initialized in core.c
 extern int pb_errno_v;
+extern char pb_custom_err_str[PB_CUSTOM_ERR_STR_LENGTH];
 
 /**
  * Sets the error state.

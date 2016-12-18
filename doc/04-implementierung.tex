@@ -22,5 +22,17 @@ Fehlerwerts, das Setzen einer \lstinline{errno}-Variablen und das Bereitstellen 
 Eventuellen Implementierungen von Drittparteien wird hierbei über einen privaten Header das eigene Setzen eines
 dynamischen Error Strings für den \lstinline{pb_errno}-Wert \lstinline{PB_E_CUSTOM} ermöglicht.
 
+\subsection{Tests}
+Eine möglichst hohe Testabdeckung der Kernbibliothek wurde angestrebt und die Entwicklung nach der
+Test-Driven-Development-Methode erprobt.
+
+Hierbei wurde auf Tests zu allen Funktionen verzichtet, welche lediglich einen Wrapper um SQLite darstellen, da die
+Funktionalität von externen Bibliotheken üblicherweise nicht durch eigene Programmtests zu verifizieren ist, sondern
+bereits durch die Programmtests der externen Bibliothek verifiziert wurde. Stattdessen halte ich mich hierbei an deren
+Schnittstellenbeschreibung.
+Für den hypothetischen Fall, dass das Datenbank-Backend ausgetauscht wird (weswegen überhaupt erst ein Wrapper
+geschrieben wurde) wären dann allerdings Tests angebracht, um sicherzustellen, dass sich das neue Datenbank-Backend im
+Wrapper identisch zu SQLite verhält.
+
 \subsection{Abfrageschnittstelle}
 TODO

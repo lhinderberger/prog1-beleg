@@ -5,8 +5,10 @@
 #ifndef PB_ERROR
 #define PB_ERROR
 
-#define PB_E_NOT_IMPLEMENTED -1
-#define PB_E_CUSTOM 951123
+#define PB_E_NOT_IMPLEMENTED    -1
+#define PB_E_FOPEN              -2
+#define PB_E_VERSION            -3
+#define PB_E_CUSTOM             951123
 
 /**
  * Retrieves the error identifier.
