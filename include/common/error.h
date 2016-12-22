@@ -14,6 +14,7 @@
 #define PB_E_RANGE              -7
 #define PB_E_NOTFOUND           -8
 #define PB_E_TOOLONG            -9
+#define PB_E_UPDATE_ID_MISSING  -10
 #define PB_E_CUSTOM             951123
 
 /**

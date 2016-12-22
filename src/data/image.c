@@ -55,6 +55,11 @@ void * pb_image_retrieve(pb_database * db, int id, int * bytes_out) {
 
     /* Copy data blob */
     void * out = malloc(*bytes_out * sizeof(void));
+    if (!out) {
+        pb_query_discard(query);
+        pb_error(PB_E_MALLOC);
+        return NULL;
+    }
     memcpy(out, query_result, (size_t)*bytes_out);
 
     /* Clean up and return */
@@ -63,38 +68,20 @@ void * pb_image_retrieve(pb_database * db, int id, int * bytes_out) {
 }
 
 int pb_image_delete(pb_database * db, int id) {
-    pb_clear_error();
-
-    if (!pb_write_possible(db))
-        return pb_errno();
-
-    /* Prepare query to delete image */
-    pb_query * query = pb_query_prepare(db, "DELETE FROM images WHERE id = :id" , -1);
-    if (!query)
-        return pb_errno();
-
-    /* Bind id parameter */
-    if (pb_query_bind_int(query, 1, id) != 0) {
-        pb_query_discard(query);
-        return pb_errno();
-    }
-
-    /* Execute */
-    if (!pb_query_step(query) && pb_errno()) {
-        pb_query_discard(query);
-        return pb_errno();
-    }
-
-    /* Clean up and return */
-    pb_query_discard(query);
-    return 0;
+    return pb_generic_delete(db, "images", id);
 }
 
 int pb_image_save(pb_database * db, int id, int update, void * data, int data_bytes) {
     pb_clear_error();
 
+    /* Validate input */
     if (!pb_write_possible(db))
         return 0;
+
+    if (update && !id) {
+        pb_error(PB_E_UPDATE_ID_MISSING);
+        return 0;
+    }
 
     /* Prepare query to save image */
     pb_query * query = NULL;
@@ -133,7 +120,8 @@ int pb_image_save(pb_database * db, int id, int update, void * data, int data_by
 
     /* Clean up and return image id */
     pb_query_discard(query);
-    return id ? id : (int)sqlite3_last_insert_rowid(query->connection);
+    query = NULL;
+    return id ? id : (int)sqlite3_last_insert_rowid(db->connection);
 }
 
 void pb_image_free(void * blob) {

@@ -43,6 +43,9 @@ const char * pb_error_str(int pb_errno) {
     static const char * fallback_msg = "An unknown error occurred!";
 
     switch (pb_errno) {
+        // We do not want to return empty error strings.
+        case PB_E_CUSTOM:   return (pb_custom_err_str[0]) ? pb_custom_err_str : fallback_msg;
+
         case PB_E_EXISTS:     return "Error opening file! Check if file exists / check permissions.";
         case PB_E_VERSION:    return "Database version mismatch. Tried to open newer version database / write to older version?";
         case PB_E_DB_BACKEND: return "Database backend error";
@@ -51,9 +54,7 @@ const char * pb_error_str(int pb_errno) {
         case PB_E_NULLPTR:    return "Program corrupted: Null pointer passed to pb-core!";
         case PB_E_NOTFOUND:   return "The requested entity could not be found!";
         case PB_E_TOOLONG:    return "A string argument passed in was too long!";
-
-        // We do not want to return empty error strings.
-        case PB_E_CUSTOM:   return (pb_custom_err_str[0]) ? pb_custom_err_str : fallback_msg;
+        case PB_E_UPDATE_ID_MISSING: return "ID must be provided for update mode!";
 
         default: return fallback_msg;
     }

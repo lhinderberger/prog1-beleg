@@ -25,4 +25,12 @@ int pb_set_database_version(pb_database * db, unsigned int version);
  */
 int pb_write_possible(pb_database * db);
 
+/**
+ * Deletes a SQL row.
+ * @param table The name of the table to delete the row from.
+ * @param id The row's id column value
+ * @return 0 on success, otherwise pb_errno()
+ */
+int pb_generic_delete(pb_database * db, const char * table, int id);
+
 #endif

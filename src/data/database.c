@@ -24,6 +24,7 @@ const char * init_sql =
         "name CHAR(64),"
         "article_no CHAR(32),"
         "image_id INT,"
+        "n_stock INT,"
         "FOREIGN KEY(image_id) REFERENCES image(id)"
     ");"
     "INSERT INTO meta VALUES ('version', '0');";
@@ -237,4 +238,40 @@ int pb_write_possible(pb_database * db) {
     }
 
     return 1;
+}
+
+int pb_generic_delete(pb_database * db, const char * table, int id) {
+    pb_clear_error();
+
+    /* Validate input */
+    if (!pb_write_possible(db))
+        return pb_errno();
+
+    if (strcmp(table, "images") && strcmp(table, "material_items"))
+        return pb_error(PB_E_RANGE); // White-list allowed table names to avoid SQL injection
+
+    /* Prepare query to delete image */
+    char sql[512];
+    if (sprintf(sql, "DELETE FROM %s WHERE id = :id", table) < 0)
+        return pb_error(PB_E_TOOLONG);
+
+    pb_query * query = pb_query_prepare(db, sql, -1);
+    if (!query)
+        return pb_errno();
+
+    /* Bind id parameter */
+    if (pb_query_bind_int(query, 1, id) != 0) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Execute */
+    if (!pb_query_step(query) && pb_errno()) {
+        pb_query_discard(query);
+        return pb_errno();
+    }
+
+    /* Clean up and return */
+    pb_query_discard(query);
+    return 0;
 }
