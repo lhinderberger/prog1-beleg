@@ -133,7 +133,8 @@ int pb_query_column_int(pb_query * query, int column_index) {
     }
 
     int result = sqlite3_column_int(query->statement, column_index);
-    if (!result && sqlite3_errcode(query->connection) != SQLITE_OK)
+    int errcode = sqlite3_errcode(query->connection);
+    if (!result && errcode != SQLITE_OK && errcode != SQLITE_ROW)
         pb_sqlite_error(query->connection);
 
     return result;

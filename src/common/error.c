@@ -53,7 +53,7 @@ const char * pb_error_str(int pb_errno) {
         case PB_E_RANGE:      return "Argument / variable / query result out of range";
         case PB_E_NULLPTR:    return "Program corrupted: Null pointer passed to pb-core!";
         case PB_E_NOTFOUND:   return "The requested entity could not be found!";
-        case PB_E_TOOLONG:    return "A string argument passed in was too long!";
+        case PB_E_TOOLONG:    return "A string argument passed in was too long! Note: Have you forgot to memset() a character array first?";
         case PB_E_UPDATE_ID_MISSING: return "ID must be provided for update mode!";
 
         default: return fallback_msg;

@@ -117,6 +117,7 @@ pb_material_item * pb_mat_item_from_query(pb_query * query, const int * column_m
                 break;
             case PB_MAT_ITEM_VAR_IMAGE_ID:
                 target = &result->image_id;
+                break;
             case PB_MAT_ITEM_VAR_N_STOCK:
                 target = &result->n_stock;
                 break;
@@ -136,7 +137,7 @@ pb_material_item * pb_mat_item_from_query(pb_query * query, const int * column_m
 
         /* Determine the column index */
         col_index = *(++column_mapping);
-        if (col_index <= 0) {
+        if (col_index < 0) {
             pb_error(PB_E_RANGE);
             pb_mat_item_free(result);
             return NULL;
@@ -199,6 +200,16 @@ int pb_mat_item_save(pb_database * db, pb_material_item * item, int update) {
 
     if (update && !item->id) {
         pb_error(PB_E_UPDATE_ID_MISSING);
+        return 0;
+    }
+
+    if (item->name[64] != 0 || item->article_no[32] != 0) {
+        pb_error(PB_E_TOOLONG);
+        return 0;
+    }
+
+    if (item->n_stock < 0) {
+        pb_error(PB_E_RANGE);
         return 0;
     }
 
