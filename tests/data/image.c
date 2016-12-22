@@ -4,10 +4,9 @@
  */
 
 #include <memory.h>
-#include <data/database.private.h>
 #include "../test_utils.h"
 
-#include "data/database.h"
+#include "data/database.private.h"
 #include "data/image.h"
 
 int main() {

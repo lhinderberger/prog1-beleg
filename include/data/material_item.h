@@ -5,6 +5,8 @@
 #ifndef PB_MATERIAL_ITEM
 #define PB_MATERIAL_ITEM
 
+#include "query.h"
+
 #define PB_MAT_ITEM_VAR_ID 1
 #define PB_MAT_ITEM_VAR_NAME 2
 #define PB_MAT_ITEM_VAR_ARTICLE_NO 3
@@ -19,6 +21,15 @@ typedef struct pb_material_item {
     char name[65], article_no[33];
     int n_stock, image_id;
 } pb_material_item;
+
+/**
+ * Retrieve a single material item from the database.
+ * Convenience function that spares you from having to build your own custom query for just retrieving
+ * a single material item.
+ * @return NULL on error (and pb_errno will be set) or when empty, otherwise a newly allocated pb_material_item
+ * that has to be freed again using pb_mat_item_free().
+ */
+pb_material_item * pb_mat_item_retrieve(pb_database * db, int id);
 
 /**
  * Parses a query result row and creates a new material item from it.
@@ -38,8 +49,10 @@ void pb_mat_item_free(pb_material_item * item);
 /**
  * Update or create a material item, persistent in the database.
  * This call can be used from within a transaction.
- * @param update If this is set to 1, the function attempts to update an existing item with the same id. Otherwise
- *  it attempts to create a new item, either auto-assigning an id (if item's id is 0) or attempting to use item's id.
+ * @param item Points to an item structure that will be copied to persistent storage. You can optionally
+ * leave item->id set at zero when creating a new material item to auto-assign a new ID.
+ * @param update If this is set to 1, an UPDATE query will be performed to overwrite an existing material item.
+ *  Otherwise this function will fail when encountering an existing material item.
  * @return Zero on failure and pb_errno is set, otherwise the item id.
  */
 int pb_mat_item_save(pb_database * db, pb_material_item * item, int update);
