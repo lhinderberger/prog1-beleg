@@ -10,13 +10,6 @@
 #include "data/image.h"
 #include "data/material_item.h"
 
-void init_example_item(pb_material_item * item) {
-    memset(item, 0, sizeof(pb_material_item));
-    strcpy(item->name, "Sonic Screwdriver");
-    strcpy(item->article_no, "DR-19WHO63");
-    item->n_stock = 234;
-}
-
 int main() {
     TEST_INIT();
 

@@ -4,6 +4,7 @@
  */
 #include "test_utils.h"
 
+#include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -27,4 +28,11 @@ const char * get_temp_filename() {
     printf("Temporary file name: %s\n", temp_filename);
 
     return temp_filename;
+}
+
+void init_example_item(pb_material_item * item) {
+    memset(item, 0, sizeof(pb_material_item));
+    strcpy(item->name, "Sonic Screwdriver");
+    strcpy(item->article_no, "DR-19WHO63");
+    item->n_stock = 234;
 }

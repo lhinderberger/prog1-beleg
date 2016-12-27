@@ -26,6 +26,7 @@ set(CORE_SOURCE_FILES
         src/data/query.c
         src/data/image.c
         src/data/material_item.c
+        src/logic/items_query.c
 )
 add_library(pb-core SHARED ${CORE_SOURCE_FILES})
 target_include_directories(pb-core PUBLIC)
@@ -53,3 +54,7 @@ target_link_libraries(test-image pb-core)
 add_executable(test-material-item tests/data/material_item.c tests/test_utils.c)
 add_test(test-material-item test-material-item)
 target_link_libraries(test-material-item pb-core)
+
+add_executable(test-items-query tests/logic/items_query.c tests/test_utils.c)
+add_test(test-items-query test-items-query)
+target_link_libraries(test-items-query pb-core)

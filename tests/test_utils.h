@@ -10,6 +10,7 @@
 
 #include "core.h"
 #include "common/error.h"
+#include "data/material_item.h"
 
 // Exits the test displaying a custom error message
 void exit_misc_error(const char * message);
@@ -19,6 +20,9 @@ void exit_pb_error(int pb_errno);
 
 // Returns a temporary file name with error handling and debug output.
 const char * get_temp_filename();
+
+// Initializes an example material item
+void init_example_item(pb_material_item * item);
 
 
 /* ===== Macroes ===== */
