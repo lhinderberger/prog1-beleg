@@ -32,7 +32,7 @@ char * escape_string(const char * in) {
     int j = 0;
     while (in[i]) {
         if (in[i] == '"') {
-            out[j] = '\\';
+            out[j] = '"';
             j++;
         }
         out[j] = in[i];
@@ -55,7 +55,7 @@ int pb_csv_export_mat_items(pb_material_item_buffer items, int n_items, const ch
         return pb_custom_error("Could not open file for CSV export");
 
     /* Print comment line */
-    fputs("# id\tname\tarticle_no\tn_stock\timage_id\n", f);
+    fputs("id\tname\tarticle_no\tn_stock\timage_id\n", f);
 
     /* Iterate over all items, print every item to file */
     char * escaped_name = NULL;
