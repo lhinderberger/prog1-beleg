@@ -100,7 +100,10 @@ int pb_query_step(pb_query * query) {
     else if (res == SQLITE_DONE) // Last row obtained
         return 0;
     else {                       // Something went wrong
-        pb_sqlite_error(query->connection);
+        if (res == SQLITE_CONSTRAINT)
+            pb_error(PB_E_CONSTRAINT);
+        else
+            pb_sqlite_error(query->connection);
         return 0;
     }
 }
@@ -170,8 +173,6 @@ int pb_query_reset(pb_query * query) {
 }
 
 void pb_query_discard(pb_query * query) {
-    pb_clear_error();
-
     if (!query)
         return;
 

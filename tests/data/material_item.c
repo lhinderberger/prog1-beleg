@@ -7,6 +7,7 @@
 #include "../test_utils.h"
 
 #include "data/database.h"
+#include "data/image.h"
 #include "data/material_item.h"
 
 void init_example_item(pb_material_item * item) {
@@ -25,11 +26,13 @@ int main() {
     if (!db)
         EXIT_PB_ERRNO();
 
+
     puts("Create material item");
     pb_material_item item;
     init_example_item(&item);
     item.id = pb_mat_item_save(db, &item, 0);
     TEST_ASSERT(item.id != 0);
+
 
     puts("Test retrieval (and thus construction from query result)");
     pb_material_item * item_out = pb_mat_item_retrieve(db, item.id);
@@ -40,8 +43,10 @@ int main() {
     TEST_ASSERT(!memcmp(item_out, &item, sizeof(pb_material_item)));
     pb_mat_item_free(item_out);
 
+
     puts("Test material item deletion");
     TEST_ASSERT(!pb_mat_item_delete(db, item.id));
+
 
     puts("Creating with unterminated strings should fail");
     init_example_item(&item);
@@ -54,10 +59,38 @@ int main() {
         item.article_no[i] = 'a';
     TEST_ASSERT(!pb_mat_item_save(db, &item, 0) && pb_errno() == PB_E_TOOLONG);
 
+
     puts("Creating with negative n_stock should fail");
     init_example_item(&item);
     item.n_stock = -1;
     TEST_ASSERT(!pb_mat_item_save(db, &item, 0) && pb_errno() == PB_E_RANGE);
+
+
+    puts("Creating with non-existing image should fail");
+    init_example_item(&item);
+    item.image_id = 123;
+    TEST_ASSERT(!pb_mat_item_save(db, &item, 0) && pb_errno() == PB_E_CONSTRAINT);
+
+
+    puts("Creating with existing image should work");
+    const char * image_data = "Hello World!";
+    init_example_item(&item);
+    item.image_id = pb_image_save(db, 0, 0, (void*)image_data, (int)strlen(image_data));
+    TEST_ASSERT(item.image_id != 0);
+    item.id = pb_mat_item_save(db, &item, 0);
+    TEST_ASSERT(item.id != 0);
+
+
+    puts("Deleting image with remaining reference in material item should fail");
+    TEST_ASSERT(pb_image_delete(db, item.image_id) != 0 && pb_errno() == PB_E_CONSTRAINT);
+
+
+    puts("Deleting material item should still work");
+    TEST_ASSERT(pb_mat_item_delete(db, item.id) == 0);
+
+
+    puts("Image should be deletable now");
+    TEST_ASSERT(pb_image_delete(db, item.image_id) == 0);
 
     /* Clean up and finish */
     pb_close_database(db);

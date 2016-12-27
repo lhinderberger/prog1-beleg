@@ -248,7 +248,7 @@ int pb_mat_item_save(pb_database * db, pb_material_item * item, int update) {
         return 0;
     }
 
-    if (pb_query_bind_int(query, 4, item->image_id)) {
+    if (item->image_id ? pb_query_bind_int(query, 4, item->image_id) : pb_query_bind_null(query, 4)) {
         pb_query_discard(query);
         return 0;
     }
@@ -262,7 +262,7 @@ int pb_mat_item_save(pb_database * db, pb_material_item * item, int update) {
     /* Execute */
     if (!pb_query_step(query) && pb_errno()) {
         pb_query_discard(query);
-        return pb_errno();
+        return 0;
     }
 
     /* Clean up and return material item id */

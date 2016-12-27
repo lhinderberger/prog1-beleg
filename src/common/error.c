@@ -55,6 +55,7 @@ const char * pb_error_str(int pb_errno) {
         case PB_E_NOTFOUND:   return "The requested entity could not be found!";
         case PB_E_TOOLONG:    return "A string argument passed in was too long! Note: Have you forgot to memset() a character array first?";
         case PB_E_UPDATE_ID_MISSING: return "ID must be provided for update mode!";
+        case PB_E_CONSTRAINT: return "A data integrity constraint was violated!";
 
         default: return fallback_msg;
     }

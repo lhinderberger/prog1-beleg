@@ -25,7 +25,7 @@ const char * init_sql =
         "article_no CHAR(32),"
         "image_id INT,"
         "n_stock INT,"
-        "FOREIGN KEY(image_id) REFERENCES image(id)"
+        "FOREIGN KEY(image_id) REFERENCES images(id)"
     ");"
     "INSERT INTO meta VALUES ('version', '0');";
 
@@ -108,6 +108,9 @@ pb_database * pb_open_database(const char * filename, int create, int auto_migra
         }
     }
 
+    /* Enable foreign key constraints */
+    pb_execute_sql(db, "PRAGMA foreign_keys = ON;");
+
     /* And we're done */
     return db;
 }
@@ -138,7 +141,10 @@ int pb_execute_sql(pb_database * db, const char * sql) {
     if (!db || !sql || !db->connection)
         return pb_error(PB_E_NULLPTR);
 
-    if (sqlite3_exec(db->connection, sql, NULL, NULL, NULL) != SQLITE_OK)
+    int res = sqlite3_exec(db->connection, sql, NULL, NULL, NULL);
+    if (res == SQLITE_CONSTRAINT)
+        return pb_error(PB_E_CONSTRAINT);
+    else if (res != SQLITE_OK)
         return pb_sqlite_error(db->connection);
 
     return 0;
