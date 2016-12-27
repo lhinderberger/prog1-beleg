@@ -6,11 +6,13 @@
 #ifndef PB_CSV_EXPORT
 #define PB_CSV_EXPORT
 
+#include "logic/items_query.h"
+
 /**
  * Writes the material items to a csv file.
- * @param filename The filename of the csv file to produce
+ * @param filename The filename of the csv file to produce. Provide "stdout" to write to terminal.
  * @return 0 on success, otherwise pb_errno()
  */
-int pb_csv_export_mat_items(pb_material_item * items, int n_items, const char * filename);
+int pb_csv_export_mat_items(pb_material_item_buffer items, int n_items, const char * filename);
 
 #endif
