@@ -35,20 +35,23 @@ void init_example_item(pb_material_item * item);
  * more output, writes to stdout and does not require debug mode.
  * @param assertion A boolean expression to be asserted
  */
-#define TEST_ASSERT(assertion) \
+#define TEST_ASSERT(assertion) {\
     puts("Test assertion: " #assertion); \
     if (!(assertion)) { \
         puts("Assertion failed!"); \
         exit(-1); \
-    }
+    } \
+}
 
 /* Macroes for main test structure, that is used in nearly every test */
-#define TEST_INIT() \
+#define TEST_INIT() {\
 if (pb_init()) \
-    EXIT_PB_ERRNO();
+    EXIT_PB_ERRNO(); \
+}
 
-#define TEST_SUCCESS() \
+#define TEST_SUCCESS() {\
 puts("\nTest passed!"); \
-return 0;
+return 0; \
+}
 
 #endif

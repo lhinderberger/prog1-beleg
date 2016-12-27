@@ -14,4 +14,11 @@
  */
 pb_material_item * pb_mat_item_create();
 
+/**
+ * Implements pb_mat_item_from_query
+ * @param item_out Points to a material item allocated from within this library where the output shall be written.
+ * @return Zero on success, otherwise pb_errno().
+ */
+int pb_mat_item_from_query_ptr(pb_query * query, pb_material_item * item_out, const int * column_mapping);
+
 #endif

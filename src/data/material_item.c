@@ -8,7 +8,7 @@
 
 #include "common/error.private.h"
 #include "data/database.private.h"
-#include "data/material_item.h"
+#include "data/material_item.private.h"
 
 #define TYPE_INT 1
 #define TYPE_STRING 2
@@ -83,9 +83,24 @@ pb_material_item * pb_mat_item_from_query(pb_query * query, const int * column_m
     }
 
     /* Create new material item */
-    pb_material_item * result = pb_mat_item_create();
+    pb_material_item *result = pb_mat_item_create();
     if (!result)
         return NULL;
+
+    /* Pass on control */
+    if (pb_mat_item_from_query_ptr(query, result, column_mapping) != 0) {
+        pb_mat_item_free(result);
+        return NULL;
+    }
+
+    return result;
+}
+
+int pb_mat_item_from_query_ptr(pb_query * query, pb_material_item * item_out, const int * column_mapping) {
+    pb_clear_error();
+
+    if (!query || !column_mapping)
+        return pb_error(PB_E_NULLPTR);
 
     /* Iterate over column mapping and fill material item */
     while (*column_mapping != 0) {
@@ -106,67 +121,53 @@ pb_material_item * pb_mat_item_from_query(pb_query * query, const int * column_m
                 type = TYPE_STRING;
                 break;
             default:
-                pb_error(PB_E_RANGE);
-                pb_mat_item_free(result);
-                return NULL;
+                return pb_error(PB_E_RANGE);
         }
 
         switch (*column_mapping) {
             case PB_MAT_ITEM_VAR_ID:
-                target = &result->id;
+                target = &item_out->id;
                 break;
             case PB_MAT_ITEM_VAR_IMAGE_ID:
-                target = &result->image_id;
+                target = &item_out->image_id;
                 break;
             case PB_MAT_ITEM_VAR_N_STOCK:
-                target = &result->n_stock;
+                target = &item_out->n_stock;
                 break;
             case PB_MAT_ITEM_VAR_NAME:
-                target = &result->name;
+                target = &item_out->name;
                 maxlength = 64;
                 break;
             case PB_MAT_ITEM_VAR_ARTICLE_NO:
-                target = &result->article_no;
+                target = &item_out->article_no;
                 maxlength = 32;
                 break;
             default:
-                pb_error(PB_E_RANGE);
-                pb_mat_item_free(result);
-                return NULL;
+                return pb_error(PB_E_RANGE);
         }
 
         /* Determine the column index */
         col_index = *(++column_mapping);
-        if (col_index < 0) {
-            pb_error(PB_E_RANGE);
-            pb_mat_item_free(result);
-            return NULL;
-        }
+        if (col_index < 0)
+            return pb_error(PB_E_RANGE);
 
         /* Retrieve column */
         if (type == TYPE_INT) {
             int * int_target = (int*)target;
 
             *int_target = pb_query_column_int(query, col_index);
-            if (!*int_target && pb_errno() != 0) {
-                pb_mat_item_free(result);
-                return NULL;
-            }
+            if (!*int_target && pb_errno() != 0)
+                return pb_errno();
         }
         else if (type == TYPE_STRING) {
             /* Retrieve value */
             const char * string_out = pb_query_column_string(query, col_index);
-            if (!string_out) {
-                pb_mat_item_free(result);
-                return NULL;
-            }
+            if (!string_out)
+                return pb_errno();
 
             /* Make sure length does not exceed string length limit. This is important for security! */
-            if (strlen(string_out) > maxlength) {
-                pb_mat_item_free(result);
-                pb_error(PB_E_TOOLONG);
-                return NULL;
-            }
+            if (strlen(string_out) > maxlength)
+                return pb_error(PB_E_TOOLONG);
 
             /* Copy string */
             strcpy((char*)target, string_out);
@@ -176,7 +177,7 @@ pb_material_item * pb_mat_item_from_query(pb_query * query, const int * column_m
         column_mapping++;
     }
 
-    return result;
+    return 0;
 }
 
 void pb_mat_item_free(pb_material_item * item) {

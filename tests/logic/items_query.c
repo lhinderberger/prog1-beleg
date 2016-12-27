@@ -13,18 +13,21 @@
 #define N_ITEMS 5
 #define BUFFER_SIZE 10
 
-pb_material_item buffer[BUFFER_SIZE];
+pb_material_item_buffer buffer = NULL;
 
 void clear_buffer() {
-    memset(buffer, 0, BUFFER_SIZE * sizeof(pb_material_item));
+    for (int i = 0; buffer[i]; i++)
+        memset(buffer[i], 0, sizeof(pb_material_item));
 }
 
 void assert_sorted_by_art_no(int n) {
     const char * previous = NULL;
     for (int i = 0; i < n; i++) {
-        if (previous)
-            TEST_ASSERT(strcmp(buffer[i].article_no, previous) >= 0);
-        previous = buffer[i].article_no;
+        puts(buffer[i]->article_no);
+        if (previous != NULL)
+            TEST_ASSERT(strcmp(buffer[i]->article_no, previous) >= 0);
+        previous = buffer[i]->article_no;
+
     }
 }
 
@@ -36,6 +39,8 @@ struct test_data {
 
 int main() {
     TEST_INIT();
+
+    buffer = pb_create_mat_item_buffer(BUFFER_SIZE);
 
     puts("Create database");
     const char * temp_filename = get_temp_filename();
