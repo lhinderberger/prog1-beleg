@@ -22,6 +22,11 @@ Fehlerwerts, das Setzen einer \lstinline{errno}-Variablen und das Bereitstellen 
 Eventuellen Implementierungen von Drittparteien wird hierbei über einen privaten Header das eigene Setzen eines
 dynamischen Error Strings für den \lstinline{pb_errno}-Wert \lstinline{PB_E_CUSTOM} ermöglicht.
 
+Während der Implementierung bin ich auf das Problem gestoßen, dass, wenn die Fehlervariable nicht manuell ausgelesen und
+gelöscht wird, nachfolgende Funktionsaufrufe fälschlicherweise Fehlerbedingungen signalisieren könnten. Um diese
+Sorgfaltspflicht also nicht der aufrufenden Software zu übertragen, habe ich mich dafür entschieden, in allen Funktionen,
+die eine Fehlerbedingung erzeugen können, zunächst die Fehlervariable zu löschen.
+
 \subsection{Tests}
 Eine möglichst hohe Testabdeckung der Kernbibliothek wurde angestrebt und die Entwicklung nach der
 Test-Driven-Development-Methode erprobt.
@@ -33,6 +38,19 @@ Schnittstellenbeschreibung.
 Für den hypothetischen Fall, dass das Datenbank-Backend ausgetauscht wird (weswegen überhaupt erst ein Wrapper
 geschrieben wurde) wären dann allerdings Tests angebracht, um sicherzustellen, dass sich das neue Datenbank-Backend im
 Wrapper identisch zu SQLite verhält.
+
+Meine Erfahrungen mit der Methode des Test Driven Development waren höchst positiv. So konnten während der Entwicklung
+und noch vor Einsatz der Datenabstraktionsschicht bereits eine ganze Reihe an kritischen Fehler entdeckt und behoben werden.
+Außerdem ist durch die Unit Tests sehr verlässlich eine gewisse Grundfunktionalität für typische Szenarien gesichert.
+
+Eine Erweiterung um Spezialfälle, automatisierte Testfallgenerierung (sogenanntes ``Fuzzy Testing'') oder die automatische
+Sicherstellung der Einhaltung zu definierender Betriebsgrenzen der Software (z.B. maximale Anzahl erfassbarer Datensätze)
+wäre denkbar und für den praktischen Einsatz ratsam.
+
+Hierbei ist besonders hervorzuheben, dass die geschriebenen Softwaretests keine ``Wegwerfprodukte'' sind, sondern auf
+Dauer Bestandteil der Qualitätssicherungskette der Software bleiben und diese mit jedem geschriebenen Softwaretest
+verbessert wird. Hierbei ist natürlich die Les- und somit Wartbarkeit der Softwaretests besonders zu beachten, da dies
+andernfalls möglicherweise den langfristigen Projekterfolg gefährden kann.
 
 \subsection{Abfrageschnittstelle}
 TODO
