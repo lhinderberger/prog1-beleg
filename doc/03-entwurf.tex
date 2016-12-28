@@ -86,3 +86,48 @@ Der zum Aufbau dieser Datenbank erforderliche SQL-Code befindet sich bei den Que
 zur Datenabstraktionsschicht.
 
 \subsection{Anwendungsfälle und Screen Design}
+Die Anwendungsfälle aus Benutzersicht wurden direkt via Glade in ein Screen Design umgesetzt, welches von der
+Benutzerschnittstelle der Materialdatenbank eingelesen und direkt verwendet werden kann.
+
+Im Folgenden findet sich eine Auflistung der erstellten Screen Designs sowie Randnotizen zu den damit verbundenen
+Anwendungsfällen.
+
+\subsubsection{Hauptfenster}
+\begin{center}
+\noindent\includegraphics[width=150mm,keepaspectratio]{images/04-hauptfenster.png}
+\end{center}
+
+Das Hauptfenster stellt den äußeren Rahmen der Anwendung dar. Es ist bewusst minimalistisch aufgebaut, um vom eigentlichen
+Inhalt der Anwendung nicht abzulenken, und besteht lediglich aus einer Werkzeugleiste für die Anwendungsfälle
+``Neue Datenbank anlegen'', ``Bestehende Datenbank öffnen'' und ``Datenbank speichern unter'' sowie einer Statusleiste
+für unkritische Systemmeldungen an den Benutzer.
+
+Den Hauptteil des Fensters nehmen hingegen die jeweiligen Bildschirme ein, die im Folgenden aufgelistet sind.
+
+\subsubsection{Willkommensbildschirm}
+\begin{center}
+\noindent\includegraphics[width=150mm,keepaspectratio]{images/05-willkommensbildschirm.png}
+\end{center}
+
+Nach dem Starten der Anwendung wird dem Benutzer zunächst obiger Willkommensbildschirm präsentiert. Hier wird die
+Aufmerksamkeit des Benutzers direkt auf die beiden wichtigsten Anwendungsfälle ``Neue Datenbank anlegen'' bzw.
+``Bestehende Datenbank öffnen'' geleitet. Sinn und Zweck dieses Bildschirms ist es, gerade neuen Benutzern einen möglichst
+einfachen Einstieg zu ermöglichen, aber auch das Steuerelement für das Öffnen einer bestehenden Datenbank zu spiegeln,
+um bei wiederholtem Öffnen der Anwendung möglichst schnell weiter arbeiten zu können.
+
+Eine naheliegende Erweiterung des Willkommensbildschirms wäre eine Liste zuletzt verwendeter Datenbanken, um nach dem
+Öffnen der Anwendung möglichst mit einem Klick dort weiterzuarbeiten, wo der Benutzer zuvor aufgehört hatte.
+
+Beim Erstellen des Screen Designs für den Willkommensbildschirm hat sich sehr schnell die mangelhafte Nutzerfreundlichkeit
+von Glade gezeigt. Selbst das recht einfache Design des Willkommensbildschirms hat vergleichsweise viel Zeit in Anspruch
+genommen, um mit Glade umgesetzt zu werden.
+Hauptgründe hierfür sind die mangelhafte bzw. übereifrige Internationalisierung der Oberfläche von Glade\footnote{Auch geläufige
+englische Fachbegriffe und Klassennamen wurden ``eingedeutscht'', was aber gerade für fortgeschrittene Entwickler
+lediglich Verwirrung stiftet}, sowie mangelndes Feedback auf eine Vielzahl an Benutzereingaben, mangelnde Robustheit und
+Fehlertoleranz der Oberfläche und nicht zuletzt mangelnde Flexibilität\footnote{Beispielsweise ist ein Verschieben von
+Buttons zwischen unterschiedlichen Layouts nicht -- oder zumindest nicht intuitiv -- möglich}.
+Hier ist die Konkurrenz z.B. in Form des Frameworks Qt 5 und dessen Qt Designer oder Windows Forms / MFC in Kombination
+mit Visual Studio dem GTK-Framework und Glade weit voraus.
+
+Speziell für den Willkommensbildschirm war es leider nicht möglich, die Buttons mit Icons auszustatten, ohne sie von ihrer
+zugewiesenen GTK-Aktion zu trennen.

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
+<interface>
+  <requires lib="gtk+" version="3.12"/>
+  <object class="GtkAction" id="actionNewDatabase">
+    <property name="label" translatable="yes">Neue Datenbank...</property>
+    <property name="short_label" translatable="yes">Neue Datenbank...</property>
+    <property name="stock_id">gtk-new</property>
+    <property name="icon_name">document-new</property>
+    <property name="always_show_image">True</property>
+  </object>
+  <object class="GtkAction" id="actionOpenDatabase">
+    <property name="label" translatable="yes">Datenbank öffnen...</property>
+    <property name="short_label" translatable="yes">Datenbank öffnen...</property>
+    <property name="stock_id">gtk-open</property>
+    <property name="always_show_image">True</property>
+  </object>
+  <object class="GtkWindow" id="welcomeWindow">
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkBox" id="box1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkLabel" id="welcomeLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="ypad">10</property>
+            <property name="label" translatable="yes">Willkommen in der Materialdatenbank</property>
+            <property name="justify">center</property>
+            <property name="ellipsize">middle</property>
+            <attributes>
+              <attribute name="font-desc" value="&lt;Geben Sie den Wert ein&gt; 24"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkAlignment" id="alignment1">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xscale">0.5</property>
+            <property name="top_padding">100</property>
+            <child>
+              <object class="GtkBox" id="box2">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkButton" id="btnNewDatabase">
+                    <property name="label" translatable="yes">button</property>
+                    <property name="use_action_appearance">True</property>
+                    <property name="related_action">actionNewDatabase</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button2">
+                    <property name="label" translatable="yes">button</property>
+                    <property name="use_action_appearance">True</property>
+                    <property name="related_action">actionOpenDatabase</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAction" id="actionSaveDatabaseAs">
+    <property name="label" translatable="yes">Datenbank speichern unter...</property>
+    <property name="short_label" translatable="yes">Datenbank speichern unter...</property>
+    <property name="stock_id">gtk-save-as</property>
+    <property name="always_show_image">True</property>
+  </object>
+  <object class="GtkWindow" id="mainWindow">
+    <property name="can_focus">False</property>
+    <property name="has_resize_grip">True</property>
+    <child>
+      <object class="GtkBox" id="mainLayout">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkToolbar" id="toolbar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkToolButton" id="tbNew">
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">actionNewDatabase</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">toolbutton</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="tbOpen">
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">actionOpenDatabase</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">toolbutton</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkToolButton" id="tbSaveAs">
+                <property name="use_action_appearance">True</property>
+                <property name="related_action">actionSaveDatabaseAs</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">toolbutton</property>
+                <property name="use_underline">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+        <child>
+          <object class="GtkStatusbar" id="statusbar">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_start">10</property>
+            <property name="margin_end">10</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+            <property name="orientation">vertical</property>
+            <property name="spacing">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
