@@ -34,10 +34,16 @@ target_include_directories(pb-core PUBLIC)
 target_link_libraries(pb-core sqlite3)
 
 # Define frontend target
-set(FRONTEND_SOURCE_FILES main.c)
+set(FRONTEND_SOURCE_FILES
+        src/frontend/main.c
+        src/frontend/error.c
+        src/frontend/globals.c
+        src/frontend/welcome.c
+)
 add_executable(pb-frontend ${FRONTEND_SOURCE_FILES})
 target_include_directories(pb-frontend PUBLIC ${GTK_INCLUDE_DIRS})
-target_link_libraries(pb-frontend ${GTK_LIBRARIES})
+target_link_libraries(pb-frontend ${GTK_LIBRARIES} pb-core)
+configure_file(ui/prog1-beleg.glade prog1-beleg.glade COPYONLY)
 
 # Define tests
 add_executable(test-custom-error tests/common/custom_error.c tests/test_utils.c)
