@@ -37,6 +37,7 @@ target_link_libraries(pb-core sqlite3)
 set(FRONTEND_SOURCE_FILES
         src/frontend/main.c
         src/frontend/error.c
+        src/frontend/list.c
         src/frontend/globals.c
         src/frontend/welcome.c
 )

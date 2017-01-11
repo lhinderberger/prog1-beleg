@@ -11,8 +11,10 @@
 
 extern GtkBuilder * builder;
 extern GtkWindow * mainWindow;
+extern GtkWidget * mainWidget;
 extern GtkBox * mainLayout;
 
+extern const char * widget_creation_error;
 extern const char * widget_retrieval_error;
 
 extern pb_database * db;
@@ -28,5 +30,7 @@ void open_database();
 
 /* Action hook for saving the database under a different name */
 void save_database_as();
+
+void swap_main_widget(GtkWidget * widget);
 
 #endif

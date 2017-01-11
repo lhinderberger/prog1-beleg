@@ -5,12 +5,15 @@
 
 #include "frontend/error.h"
 #include "frontend/globals.h"
+#include "frontend/list.h"
 
 GtkBuilder * builder = NULL;
 GtkWindow * mainWindow = NULL;
+GtkWidget * mainWidget = NULL;
 GtkBox * mainLayout = NULL;
 pb_database * db = NULL;
 
+const char * widget_creation_error = "Could not create new widget (_not_ from builder)!";
 const char * widget_retrieval_error = "Could not retrieve widget from builder!";
 
 void open_database_impl(GtkDialog * fileChooserDialog, int create) {
@@ -30,7 +33,7 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
         fatal_pb_error();
 
     /* Open material list */
-    fatal_error("Not implemented");
+    show_material_list();
 }
 
 void close_database() {
@@ -72,5 +75,15 @@ void open_database() {
 }
 
 void save_database_as() {
-    fatal_error("Mupps");
+    fatal_error("Not Implemented!");
+}
+
+void swap_main_widget(GtkWidget * widget) {
+    if (mainWidget) {
+        gtk_container_remove((GtkContainer *)mainLayout, mainWidget);
+        mainWidget = NULL;
+    }
+
+    gtk_box_pack_start((GtkBox*)mainLayout, widget, 1, 1, 0);
+    mainWidget = widget;
 }

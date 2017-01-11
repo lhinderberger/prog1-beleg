@@ -136,3 +136,17 @@ mit Visual Studio dem GTK-Framework und Glade weit voraus.
 
 Speziell für den Willkommensbildschirm war es leider nicht möglich, die Buttons mit Icons auszustatten, ohne sie von ihrer
 zugewiesenen GTK-Aktion zu trennen.
+
+\subsubsection{Listenansicht}
+\begin{center}
+\noindent\includegraphics[width=150mm,keepaspectratio]{images/06-listenansicht.png}
+\end{center}
+
+Damit die Widgets für die einzelnen Listenpunkte der Materialliste dynamisch generierbar werden, wurde auf ein
+Screendesign via Glade verzichtet. Zwar wäre die Vorfertigung eines Listenpunktes als Widget via Glade wohl komfortabler
+gewesen, leider ist mir aber keine Möglichkeit ersichtlich, ein Glade-Widget mehrfach zu verwenden, also quasi als
+``Prototyp'' für die eigentlichen Listenpunkte.
+
+Somit verhält sich die Listenansicht sozusagen ``hybrid'': Der Äußere, statische Rahmen (z.B. Suchfeld, Button ``Hinzufügen'')
+ist in Glade erstellt und wird dann zur Laufzeit dynamisch um die einzelnen Listenpunkte ergänzt.
+Oben im Bild ist ein grobes Screendesign zu sehen, welches via Gimp erstellt wurde.

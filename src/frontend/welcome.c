@@ -12,5 +12,5 @@ void show_welcome_screen() {
     GtkWidget * welcomeScreen = (GtkWidget*)gtk_builder_get_object(builder, "welcomeScreen");
     if (!welcomeScreen)
         fatal_error(widget_retrieval_error);
-    gtk_container_add((GtkContainer*)mainLayout, welcomeScreen);
+    swap_main_widget(welcomeScreen);
 }
