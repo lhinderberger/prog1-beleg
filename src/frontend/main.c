@@ -16,6 +16,7 @@ int main(int argc, char ** args) {
     show_welcome_screen();
     gtk_widget_show((GtkWidget*)mainWindow);
     gtk_main();
+    close_database();
     return 0;
 }
 

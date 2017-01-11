@@ -119,13 +119,18 @@ Eine naheliegende Erweiterung des Willkommensbildschirms wäre eine Liste zuletz
 Öffnen der Anwendung möglichst mit einem Klick dort weiterzuarbeiten, wo der Benutzer zuvor aufgehört hatte.
 
 Beim Erstellen des Screen Designs für den Willkommensbildschirm hat sich sehr schnell die mangelhafte Nutzerfreundlichkeit
-von Glade gezeigt. Selbst das recht einfache Design des Willkommensbildschirms hat vergleichsweise viel Zeit in Anspruch
-genommen, um mit Glade umgesetzt zu werden.
+und Stabilität\footnote{Es ist beispielsweise möglich, Glade mit dem versehentlichen Ablegen eines Widgets in sich
+selbst unter bestimmen Voraussetzungen in eine Endlosschleife zu schicken, in welcher unkontrolliert Speicher allokiert
+und somit das gesamte System blockiert wird. Diese Rekursion wäre eine leicht erkennbare Fehlerbedingung gewesen und hätte
+durch achtsame Programmierung verhindert werden können. Als wäre dies nicht genug, gehen hierbei sogar trotz vorherigem
+Speichervorgang Daten verloren -- unakzeptabel für eine Anwendung, die im professionellen Umfeld verwendet werden soll.}
+von Glade gezeigt. Selbst das recht einfache Design des Willkommensbildschirms hat vergleichsweise viel
+Zeit in Anspruch genommen, um mit Glade umgesetzt zu werden.
 Hauptgründe hierfür sind die mangelhafte bzw. übereifrige Internationalisierung der Oberfläche von Glade\footnote{Auch geläufige
 englische Fachbegriffe und Klassennamen wurden ``eingedeutscht'', was aber gerade für fortgeschrittene Entwickler
-lediglich Verwirrung stiftet}, sowie mangelndes Feedback auf eine Vielzahl an Benutzereingaben, mangelnde Robustheit und
-Fehlertoleranz der Oberfläche und nicht zuletzt mangelnde Flexibilität\footnote{Beispielsweise ist ein Verschieben von
-Buttons zwischen unterschiedlichen Layouts nicht -- oder zumindest nicht intuitiv -- möglich}.
+lediglich Verwirrung stiftet}, sowie mangelndes Feedback auf eine Vielzahl an Benutzereingaben, mangelnde Robustheit,
+Intuitivität und Fehlertoleranz der Oberfläche.
+
 Hier ist die Konkurrenz z.B. in Form des Frameworks Qt 5 und dessen Qt Designer oder Windows Forms / MFC in Kombination
 mit Visual Studio dem GTK-Framework und Glade weit voraus.
 

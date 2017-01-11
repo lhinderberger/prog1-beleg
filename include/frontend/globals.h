@@ -17,7 +17,7 @@ extern const char * widget_retrieval_error;
 
 extern pb_database * db;
 
-/* Action hook for closing database and resetting application */
+/* Closes database and resets application. Suitable for cleanup. */
 void close_database();
 
 /* Action hook for creating a database */

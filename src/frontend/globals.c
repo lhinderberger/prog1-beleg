@@ -34,7 +34,10 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
 }
 
 void close_database() {
-    db = NULL;
+    if (db) {
+        pb_close_database(db);
+        db = NULL;
+    }
 }
 
 void new_database() {
@@ -60,6 +63,7 @@ void open_database() {
     gtk_window_set_transient_for((GtkWindow*)obenDbFileChooser, mainWindow);
 
     /* Execute dialog */
+    //TODO: intercept directory opening!
     if (gtk_dialog_run((GtkDialog*)obenDbFileChooser) == 1)
         open_database_impl((GtkDialog*)obenDbFileChooser, 0);
 
