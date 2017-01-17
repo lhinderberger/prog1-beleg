@@ -3,6 +3,7 @@
  * See README for details
  */
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 #include "logic/items_query.h"
 
 #include "frontend/error.h"
@@ -70,6 +71,7 @@ void init_ui(int argc, char ** args) {
     if (!mainWindow)
         fatal_error(widget_retrieval_error);
     g_signal_connect(mainWindow, "destroy", G_CALLBACK(gtk_main_quit), NULL);
+    gtk_window_set_title(mainWindow, C_("Main Window heading", "Materialdatenbank"));
 
     mainLayout = (GtkBox*)gtk_builder_get_object(builder, "mainLayout");
     if (!mainLayout)

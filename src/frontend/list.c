@@ -1,7 +1,11 @@
+/* This file is part of prog1-beleg
+ * Written by Lucas Hinderberger, HTW Dresden, winter term of 2016/17
+ * See README for details
+ */
+
 #include "frontend/globals.h"
 #include "frontend/error.h"
 #include "frontend/list.h"
-#include "logic/items_query.h"
 
 #include <glib/gi18n.h>
 
@@ -100,11 +104,13 @@ void render_material_item(pb_material_item * item) {
     add_label(row, 2, item->article_no);
 
     /* Add n_stock column */
-    //TODO: Make editable
-    char n_stock_str[32];
-    if (sprintf(n_stock_str, "%d", item->n_stock) < 0)
-        fatal_error("sprintf failed for n_stock");
-    add_label(row, 3, n_stock_str);
+    //TODO: Make editable by attaching to signal
+    GtkAdjustment * n_stock_adjustment = gtk_adjustment_new(item->n_stock, 0.0, 9999999999.0, 1.0, 5.0, 0.0);
+    if (!n_stock_adjustment)
+        fatal_error("Could not create adjustment for n_stock");
+    GtkWidget * n_stock_editor = gtk_spin_button_new(n_stock_adjustment, 1.0, 0);
+    gtk_grid_attach(listGrid, n_stock_editor, 3, row, 1, 1);
+    gtk_widget_show(n_stock_editor);
 
     /* Add edit button */
     GtkWidget * edit_btn = gtk_button_new_from_icon_name("gtk-edit", GTK_ICON_SIZE_BUTTON);
