@@ -10,7 +10,7 @@
 #include <stdlib.h>
 
 void fatal_error(const char * message) {
-    GtkWidget * dialog = gtk_message_dialog_new(mainWindow, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, message);
+    GtkWidget * dialog = gtk_message_dialog_new(mainWindow, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "%s", message);
     if (!dialog)
         fprintf(stderr, "Could not create fatal error dialogue.\n%s", message);
     else

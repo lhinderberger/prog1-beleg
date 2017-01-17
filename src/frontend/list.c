@@ -9,19 +9,38 @@ GtkGrid * listGrid = NULL;
 GtkWidget * listScreen = NULL;
 GtkScrolledWindow * scrolledWindow = NULL;
 
-#define ITEM_BUF_SIZE 10
-pb_material_item * item_buf[ITEM_BUF_SIZE];
 int n_items_displayed = 0;
 
-void add_list_heading(int column, const char * label) {
+void add_list_heading(int column, const char * label, int expand) {
+    /* Create formatted label markup */
+    char fmt_label[128];
+    if (sprintf(fmt_label, "<b>%s</b>", label) < 0)
+        fatal_error("sprintf failed for list heading");
+
     /* Create label */
-    GtkWidget * lbl_widget = gtk_label_new(label);
+    GtkWidget * lbl_widget = gtk_label_new(NULL);
     if (!lbl_widget)
         fatal_error(widget_creation_error);
+    gtk_label_set_markup((GtkLabel*)lbl_widget, fmt_label);
+    gtk_label_set_xalign((GtkLabel*)lbl_widget, 0.0);
+    if (expand)
+        gtk_widget_set_hexpand(lbl_widget, TRUE);
 
     /* Add to grid */
     gtk_grid_attach(listGrid, lbl_widget, column, 0, 1, 1);
     gtk_widget_show(lbl_widget);
+}
+
+void add_label(int row, int column, const char * label) {
+    /* Create label */
+    GtkWidget * glabel = gtk_label_new(label);
+    if (!glabel)
+        fatal_error(widget_creation_error);
+    gtk_label_set_xalign((GtkLabel*)glabel, 0.0);
+
+    /* Add to grid */
+    gtk_grid_attach(listGrid, glabel, column, row, 1, 1);
+    gtk_widget_show(glabel);
 }
 
 void clear_list() {
@@ -38,12 +57,16 @@ void clear_list() {
     listGrid = (GtkGrid*)gtk_grid_new();
     if (!listGrid)
         fatal_error(widget_creation_error);
+    gtk_grid_set_row_spacing(listGrid, 5);
+    gtk_grid_set_column_spacing(listGrid, 10);
+    gtk_widget_set_hexpand((GtkWidget*)listGrid, TRUE);
     gtk_container_add((GtkContainer*)scrolledWindow, (GtkWidget*)listGrid);
 
     /* Add headings */
-    add_list_heading(1, C_("List headings", "Artikelname"));
-    add_list_heading(2, C_("List headings", "Artikelnummer"));
-    add_list_heading(3, C_("List headings", "Lagerbestand"));
+    add_list_heading(1, C_("List headings", "Artikelname"), 1);
+    add_list_heading(2, C_("List headings", "Artikelnummer"), 1);
+    add_list_heading(3, C_("List headings", "Lagerbestand"), 0);
+    add_list_heading(4, C_("List headings", "Aktion       "), 0);
 
     /* Show widget */
     gtk_widget_show((GtkWidget*)listGrid);
@@ -51,42 +74,47 @@ void clear_list() {
 
 void render_material_item(pb_material_item * item) {
     g_assert(item);
+    int row = 1 + n_items_displayed;
 
-    /*GtkWidget * dummybutton = gtk_button_new();
-    char buf[512];
-    sprintf(buf, "Dummy Button %d", (int)item);
-    gtk_button_set_label((GtkButton*)dummybutton, buf);
-    gtk_grid_attach(listGrid, dummybutton, 0, 1 + n_items, 1, 1);
-    gtk_widget_show(dummybutton);
-    n_items++;*/
-    //TODO: Render actual material item
+    /* Add image column */
+    //TODO: Read actual image from DB
+    GtkWidget * art_image_frame = gtk_frame_new("");
+    if (!art_image_frame)
+        fatal_error(widget_creation_error);
 
-    //TODO: Add image column
+    GtkWidget * art_image = gtk_image_new_from_icon_name("gtk-missing-image", GTK_ICON_SIZE_BUTTON);
+    if (!art_image)
+        fatal_error(widget_creation_error);
+    gtk_widget_set_size_request(art_image, 80, 80);
+
+    gtk_container_add((GtkContainer*)art_image_frame, art_image);
+    gtk_grid_attach(listGrid, art_image_frame, 0, row, 1, 1);
+    gtk_widget_show(art_image_frame);
+    gtk_widget_show(art_image);
+
 
     /* Add article name column */
-    GtkLabel * art_name_label = gtk_label_new(item->name);
-    if (!art_name_label)
-        fatal_error(widget_creation_error);
-    gtk_grid_attach(listGrid, art_name_label, 1, n_items_displayed, 1, 1);
-    gtk_widget_show(art_name_label);
+    add_label(row, 1, item->name);
 
     /* Add article id column */
-    GtkLabel * art_id_label = gtk_label_new(item->article_no);
-    if (!art_id_label)
-        fatal_error(widget_creation_error);
-    gtk_grid_attach(listGrid, art_id_label, 2, n_items_displayed, 1, 1);
-    gtk_widget_show(art_id_label);
+    add_label(row, 2, item->article_no);
 
-    /* Add article id column */
+    /* Add n_stock column */
+    //TODO: Make editable
     char n_stock_str[32];
     if (sprintf(n_stock_str, "%d", item->n_stock) < 0)
         fatal_error("sprintf failed for n_stock");
+    add_label(row, 3, n_stock_str);
 
-    GtkLabel * n_stock_label = gtk_label_new(n_stock_str);
-    if (!n_stock_label)
+    /* Add edit button */
+    GtkWidget * edit_btn = gtk_button_new_from_icon_name("gtk-edit", GTK_ICON_SIZE_BUTTON);
+    if (!edit_btn)
         fatal_error(widget_creation_error);
-    gtk_grid_attach(listGrid, n_stock_label, 3, n_items_displayed, 1, 1);
-    gtk_widget_show(n_stock_label);
+    gtk_button_set_always_show_image((GtkButton*)edit_btn, TRUE);
+    gtk_widget_set_halign(edit_btn, GTK_ALIGN_START);
+    gtk_widget_set_valign(edit_btn, GTK_ALIGN_CENTER);
+    gtk_grid_attach(listGrid, edit_btn, 4, row, 1, 1);
+    gtk_widget_show(edit_btn);
 
     /* Finalize */
     n_items_displayed++;

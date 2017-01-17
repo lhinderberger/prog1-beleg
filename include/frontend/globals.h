@@ -8,6 +8,7 @@
 #include <gtk/gtk.h>
 
 #include "data/database.h"
+#include "logic/items_query.h"
 
 extern GtkBuilder * builder;
 extern GtkWindow * mainWindow;
@@ -18,6 +19,9 @@ extern const char * widget_creation_error;
 extern const char * widget_retrieval_error;
 
 extern pb_database * db;
+
+#define ITEM_BUF_SIZE 10
+extern pb_material_item_buffer item_buf;
 
 /* Closes database and resets application. Suitable for cleanup. */
 void close_database();

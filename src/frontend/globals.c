@@ -12,6 +12,7 @@ GtkWindow * mainWindow = NULL;
 GtkWidget * mainWidget = NULL;
 GtkBox * mainLayout = NULL;
 pb_database * db = NULL;
+pb_material_item_buffer item_buf = NULL;
 
 const char * widget_creation_error = "Could not create new widget (_not_ from builder)!";
 const char * widget_retrieval_error = "Could not retrieve widget from builder!";

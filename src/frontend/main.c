@@ -3,24 +3,50 @@
  * See README for details
  */
 #include <gtk/gtk.h>
-#include "data/database.h"
+#include "logic/items_query.h"
 
 #include "frontend/error.h"
 #include "frontend/globals.h"
 #include "frontend/welcome.h"
 
+void cleanup();
+void init(int argc, char ** args);
 void init_ui(int argc, char ** args);
 
 int main(int argc, char ** args) {
-    init_ui(argc, args);
+    init(argc, args);
+
     show_welcome_screen();
     gtk_widget_show((GtkWidget*)mainWindow);
     gtk_main();
-    close_database();
+
+    cleanup();
     return 0;
 }
 
+/**
+ * Initializes the application, including user interface and globals
+ * @param argc main function argument count
+ * @param args main function arguments
+ */
+void init(int argc, char ** args) {
+    /* Allocate material item buffer */
+    item_buf = pb_create_mat_item_buffer(ITEM_BUF_SIZE);
+    if (!item_buf)
+        fatal_error("Could not allocate material item buffer");
 
+    /* Initialize UI */
+    init_ui(argc, args);
+}
+
+/**
+ * Clean up all application resources for a clean exit.
+ */
+void cleanup() {
+    close_database();
+    pb_free_mat_item_buffer(item_buf);
+    item_buf = NULL;
+}
 
 /**
  * Initializes user interface
