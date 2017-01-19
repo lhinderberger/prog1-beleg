@@ -7,8 +7,6 @@
 #include "frontend/globals.h"
 
 void show_welcome_screen() {
-    close_database();
-
     GtkWidget * welcomeScreen = (GtkWidget*)gtk_builder_get_object(builder, "welcomeScreen");
     if (!welcomeScreen)
         fatal_error(widget_retrieval_error);

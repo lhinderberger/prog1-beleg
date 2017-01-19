@@ -3,6 +3,7 @@
  * See README for details
  */
 
+#include "frontend/welcome.h"
 #include "frontend/error.h"
 #include "frontend/globals.h"
 #include "frontend/list.h"
@@ -11,6 +12,7 @@ GtkBuilder * builder = NULL;
 GtkWindow * mainWindow = NULL;
 GtkWidget * mainWidget = NULL;
 GtkBox * mainLayout = NULL;
+GtkStatusbar * statusbar = NULL;
 pb_database * db = NULL;
 pb_material_item_buffer item_buf = NULL;
 
@@ -34,6 +36,7 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
         fatal_pb_error();
 
     /* Open material list */
+    set_db_controls_sensitive(TRUE);
     show_material_list();
 }
 
@@ -42,6 +45,8 @@ void close_database() {
         pb_close_database(db);
         db = NULL;
     }
+    set_db_controls_sensitive(FALSE);
+    show_welcome_screen();
 }
 
 void new_database() {
@@ -79,12 +84,25 @@ void save_database_as() {
     fatal_error("Not Implemented!");
 }
 
+void set_db_controls_sensitive(int sensitive) {
+    GtkAction * actionCloseDatabase = (GtkAction*)gtk_builder_get_object(builder, "actionCloseDatabase");
+    if (!actionCloseDatabase)
+        fatal_error(widget_retrieval_error);
+    gtk_action_set_sensitive (actionCloseDatabase, sensitive);
+
+    GtkAction * actionSaveDatabaseAs = (GtkAction*)gtk_builder_get_object(builder, "actionSaveDatabaseAs");
+    if (!actionSaveDatabaseAs)
+        fatal_error(widget_retrieval_error);
+    gtk_action_set_sensitive (actionSaveDatabaseAs, sensitive);
+}
+
 void swap_main_widget(GtkWidget * widget) {
     if (mainWidget) {
         gtk_container_remove((GtkContainer *)mainLayout, mainWidget);
         mainWidget = NULL;
     }
 
-    gtk_box_pack_start((GtkBox*)mainLayout, widget, 1, 1, 0);
+    if (widget)
+        gtk_box_pack_start(mainLayout, widget, 1, 1, 0);
     mainWidget = widget;
 }

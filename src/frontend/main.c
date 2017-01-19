@@ -77,18 +77,21 @@ void init_ui(int argc, char ** args) {
     if (!mainLayout)
         fatal_error(widget_retrieval_error);
 
+    statusbar = (GtkStatusbar*)gtk_builder_get_object(builder, "statusbar");
+    if (!statusbar)
+        fatal_error(widget_retrieval_error);
+
     /* Wire actions */
     GtkAction * actionCloseDatabase = (GtkAction*)gtk_builder_get_object(builder, "actionCloseDatabase");
     if (!actionCloseDatabase)
         fatal_error(widget_retrieval_error);
-    gtk_action_set_sensitive (actionCloseDatabase, FALSE);
     g_signal_connect(actionCloseDatabase, "activate", G_CALLBACK(close_database), NULL);
 
     GtkAction * actionSaveDatabaseAs = (GtkAction*)gtk_builder_get_object(builder, "actionSaveDatabaseAs");
     if (!actionSaveDatabaseAs)
         fatal_error(widget_retrieval_error);
-    gtk_action_set_sensitive (actionSaveDatabaseAs, FALSE);
     g_signal_connect(actionSaveDatabaseAs, "activate", G_CALLBACK(save_database_as), NULL);
+    set_db_controls_sensitive(FALSE);
 
     GtkAction * actionNewDatabase = (GtkAction*)gtk_builder_get_object(builder, "actionNewDatabase");
     if (!actionNewDatabase)

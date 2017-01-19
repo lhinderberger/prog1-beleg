@@ -21,3 +21,11 @@ void fatal_error(const char * message) {
 void fatal_pb_error() {
     fatal_error(pb_error_str(pb_errno()));
 }
+
+void warning(const char * message, const char * details) {
+    GtkWidget * dialog = gtk_message_dialog_new(mainWindow, GTK_DIALOG_MODAL, GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE, "%s\n%s", message, details ? details : "");
+    if (!dialog)
+        fatal_error("Could not show warning message!");
+    else
+        gtk_dialog_run(GTK_DIALOG(dialog));
+}

@@ -43,7 +43,7 @@ set(FRONTEND_SOURCE_FILES
 )
 add_executable(pb-frontend ${FRONTEND_SOURCE_FILES})
 target_include_directories(pb-frontend PUBLIC ${GTK_INCLUDE_DIRS})
-target_link_libraries(pb-frontend ${GTK_LIBRARIES} pb-core)
+target_link_libraries(pb-frontend ${GTK_LIBRARIES} pb-core m)
 configure_file(ui/prog1-beleg.glade prog1-beleg.glade COPYONLY)
 
 # Define tests

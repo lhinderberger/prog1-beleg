@@ -63,7 +63,8 @@ int pb_csv_export_mat_items(pb_material_item_buffer items, int n_items, const ch
     for (int i = 0; i < n_items; i++) {
         /* Check pointer */
         if (!items[i]) {
-            fclose(f);
+            if (f != stdout)
+                fclose(f);
             return pb_error(PB_E_NULLPTR);
         }
         pb_material_item * item = items[i];
@@ -71,13 +72,15 @@ int pb_csv_export_mat_items(pb_material_item_buffer items, int n_items, const ch
         /* Escape strings */
         escaped_name = escape_string(item->name);
         if (!escaped_name) {
-            fclose(f);
+            if (f != stdout)
+                fclose(f);
             return pb_errno();
         }
         escaped_article_no = escape_string(item->article_no);
         if (!escaped_article_no) {
             free(escaped_name);
-            fclose(f);
+            if (f != stdout)
+                fclose(f);
             return pb_errno();
         }
 
@@ -90,6 +93,7 @@ int pb_csv_export_mat_items(pb_material_item_buffer items, int n_items, const ch
         escaped_name = escaped_article_no = NULL;
     }
 
-    fclose(f);
+    if (f != stdout)
+        fclose(f);
     return 0;
 }

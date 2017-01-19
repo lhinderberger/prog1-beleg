@@ -13,6 +13,7 @@
 extern GtkBuilder * builder;
 extern GtkWindow * mainWindow;
 extern GtkWidget * mainWidget;
+extern GtkStatusbar * statusbar;
 extern GtkBox * mainLayout;
 
 extern const char * widget_creation_error;
@@ -20,7 +21,7 @@ extern const char * widget_retrieval_error;
 
 extern pb_database * db;
 
-#define ITEM_BUF_SIZE 10
+#define ITEM_BUF_SIZE 5
 extern pb_material_item_buffer item_buf;
 
 /* Closes database and resets application. Suitable for cleanup. */
@@ -34,6 +35,8 @@ void open_database();
 
 /* Action hook for saving the database under a different name */
 void save_database_as();
+
+void set_db_controls_sensitive(int sensitive);
 
 void swap_main_widget(GtkWidget * widget);
 

@@ -83,12 +83,23 @@ int main() {
 
     puts("Do search query");
     clear_buffer();
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "ard", PB_MAT_ITEM_VAR_NAME, 0, BUFFER_SIZE) == 2);
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "river", PB_MAT_ITEM_VAR_NAME, 0, BUFFER_SIZE) == 3);
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "ard", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, BUFFER_SIZE) == 0);
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "river", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, BUFFER_SIZE) == 0);
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "asdf", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, BUFFER_SIZE) == 1);
-    TEST_ASSERT(pb_find_mat_items(db, buffer, "uvw", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, BUFFER_SIZE) == 2);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "ard", PB_MAT_ITEM_VAR_NAME, 0, 0, BUFFER_SIZE) == 2);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "river", PB_MAT_ITEM_VAR_NAME, 0, 0, BUFFER_SIZE) == 3);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "ard", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, 0, BUFFER_SIZE) == 0);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "river", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, 0, BUFFER_SIZE) == 0);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "asdf", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, 0, BUFFER_SIZE) == 1);
+    TEST_ASSERT(pb_find_mat_items(db, buffer, "uvw", PB_MAT_ITEM_VAR_ARTICLE_NO, 0, 0, BUFFER_SIZE) == 2);
+
+    puts("Testing counting");
+    for (int i = 0; i < 99; i++) {
+        init_example_item(&item);
+        if(!pb_mat_item_save(db, &item, 0)) {
+            printf("Error creating example items (not in scope of this test).");
+            return -1;
+        }
+    }
+    TEST_ASSERT(pb_find_mat_items(db, NULL, "oni", PB_MAT_ITEM_VAR_NAME, 1, 0, 0) == 100);
+    TEST_ASSERT(pb_count_mat_items(db) == 104);
 
     /* Clean up and finish */
     pb_close_database(db);

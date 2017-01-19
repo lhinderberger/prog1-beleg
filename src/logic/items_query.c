@@ -72,16 +72,16 @@ void pb_free_mat_item_buffer(pb_material_item_buffer buffer) {
     free(buffer);
 }
 
-int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int offset, int limit) {
+int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int offset, int limit) {
     pb_clear_error();
 
     /* Validate input */
-    if (!db || !buf_out || !search_string) {
+    if (!db || (!count_mode && !buf_out) || !search_string) {
         pb_error(PB_E_NULLPTR);
         return -1;
     }
 
-    if (offset < 0 || limit < 0) {
+    if (!count_mode && (offset < 0 || limit < 0)) {
         pb_error(PB_E_RANGE);
         return -1;
     }
@@ -101,7 +101,7 @@ int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const c
 
     /* Prepare query */
     char query_sql[256];
-    if (sprintf(query_sql, "SELECT id, name, article_no, n_stock, image_id FROM material_items WHERE %s LIKE '%%' || :search_string || '%%' LIMIT :limit OFFSET :offset", search_column) < 0) {
+    if (sprintf(query_sql, "SELECT id, name, article_no, n_stock, image_id%s FROM material_items WHERE %s LIKE '%%' || :search_string || '%%' %s", count_mode ? ", COUNT(*)" : "", search_column, count_mode ? "" : "LIMIT :limit OFFSET :offset") < 0) {
         pb_error(PB_E_TOOLONG);
         return -1;
     }
@@ -115,18 +115,35 @@ int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const c
         return -1;
     }
 
-    if (pb_query_bind_int(query, 2, limit) != 0) {
-        pb_query_discard(query);
-        return -1;
-    }
+    if (!count_mode) {
+        if (pb_query_bind_int(query, 2, limit) != 0) {
+            pb_query_discard(query);
+            return -1;
+        }
 
-    if (pb_query_bind_int(query, 3, offset) != 0) {
-        pb_query_discard(query);
-        return -1;
+        if (pb_query_bind_int(query, 3, offset) != 0) {
+            pb_query_discard(query);
+            return -1;
+        }
     }
 
     /* Execute query */
-    return retrieve_query_results(query, buf_out);
+    if (count_mode) {
+        if (!pb_query_step(query)) {
+            pb_query_discard(query);
+            return -1;
+        }
+
+        int result = pb_query_column_int(query, 5);
+        pb_query_discard(query);
+        if (pb_errno() != 0)
+            return -1;
+
+        return result;
+    }
+    else {
+        return retrieve_query_results(query, buf_out);
+    }
 }
 
 int pb_list_mat_items(pb_database * db, pb_material_item_buffer buf_out, int sort_field, int sort_ascending, int offset, int limit) {
@@ -188,4 +205,27 @@ int pb_list_mat_items(pb_database * db, pb_material_item_buffer buf_out, int sor
 
     /* Execute query */
     return retrieve_query_results(query, buf_out);
+}
+
+int pb_count_mat_items(pb_database * db) {
+    pb_clear_error();
+    if (!db) {
+        pb_error(PB_E_NULLPTR);
+        return -1;
+    }
+
+    /* Prepare and execute query */
+    pb_query * query = pb_query_prepare(db, "SELECT COUNT(*) FROM material_items;", -1);
+    if (!query)
+        return -1;
+    if (!pb_query_step(query))
+        return -1;
+
+    /* Retrieve result and clean up */
+    int result = pb_query_column_int(query, 0);
+    pb_query_discard(query);
+    if (pb_errno() != 0)
+        return -1;
+
+    return result;
 }

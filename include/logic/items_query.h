@@ -31,11 +31,13 @@ void pb_free_mat_item_buffer(pb_material_item_buffer buffer);
  * @param arr_out Points to a buffer array of pb_material_item instances where the query results will be written to.
  * @param search_string The search string to be matched. Matching method is implementation dependant.
  * @param field The PB_MAT_ITEM_VAR_* index of the field to be searched. Currently only supports NAME and ARTICLE_NO
+ * @param count_mode When set to 1, the offset and limit arguments will be ignored and the function will return the
+ *  total number of items matching the search description. Set to 0 for normal behaviour.
  * @param offset SQL request offset - The number of items to skip before returning results.
  * @param limit The maximum number of items to be read (usually the size of arr_out).
  * @return The number of items read, or a negative indicator on error, plus pb_errno will be set.
  */
-int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int offset, int limit);
+int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int offset, int limit);
 
 /**
  * List material items, optionally sorted by a certain field.
@@ -48,5 +50,11 @@ int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const c
  * @return The number of items read, or a negative indicator on error, plus pb_errno will be set.
  */
 int pb_list_mat_items(pb_database * db, pb_material_item_buffer buf_out, int sort_field, int sort_ascending, int offset, int limit);
+
+/**
+ * Counts material items.
+ * @return The number of material items present in the given database or a negative indicator on error, plus pb_errno will be set.
+ */
+int pb_count_mat_items(pb_database * db);
 
 #endif

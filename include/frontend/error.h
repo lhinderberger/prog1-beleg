@@ -17,4 +17,11 @@ void fatal_error(const char * message);
  */
 void fatal_pb_error();
 
+/**
+ * Display a warning message to the user
+ * @param message Mandatory message
+ * @param details Optional details string. Provide NULL, if not present.
+ */
+void warning(const char * message, const char * details);
+
 #endif
