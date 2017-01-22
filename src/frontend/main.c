@@ -78,9 +78,6 @@ void init_ui(int argc, char ** args) {
     GtkAction * actionCloseDatabase = (GtkAction*)checked_retrieve_widget("actionCloseDatabase");
     g_signal_connect(actionCloseDatabase, "activate", G_CALLBACK(close_database), NULL);
 
-    GtkAction * actionSaveDatabaseAs = (GtkAction*)checked_retrieve_widget("actionSaveDatabaseAs");
-    g_signal_connect(actionSaveDatabaseAs, "activate", G_CALLBACK(save_database_as), NULL);
-
     GtkAction * actionNewDatabase = (GtkAction*)checked_retrieve_widget("actionNewDatabase");
     g_signal_connect(actionNewDatabase, "activate", G_CALLBACK(new_database), NULL);
 

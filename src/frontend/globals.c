@@ -83,16 +83,9 @@ void open_database() {
     gtk_widget_hide((GtkWidget*)obenDbFileChooser);
 }
 
-void save_database_as() {
-    fatal_error("Not Implemented!");
-}
-
 void set_db_controls_sensitive(int sensitive) {
     GtkAction * actionCloseDatabase = (GtkAction*)checked_retrieve_widget("actionCloseDatabase");
     gtk_action_set_sensitive (actionCloseDatabase, sensitive);
-
-    GtkAction * actionSaveDatabaseAs = (GtkAction*)checked_retrieve_widget("actionSaveDatabaseAs");
-    gtk_action_set_sensitive (actionSaveDatabaseAs, sensitive);
 }
 
 void swap_main_widget(GtkWidget * widget) {

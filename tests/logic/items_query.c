@@ -7,7 +7,6 @@
 
 #include "data/database.h"
 #include "data/material_item.h"
-#include "logic/csv_export.h"
 #include "logic/items_query.h"
 #include "../test_utils.h"
 
@@ -75,11 +74,6 @@ int main() {
     clear_buffer();
     TEST_ASSERT(pb_list_mat_items(db, buffer, PB_MAT_ITEM_VAR_ARTICLE_NO, 1, 0, BUFFER_SIZE) == N_ITEMS);
     assert_sorted_by_art_no(N_ITEMS);
-
-
-    puts("Test CSV export by the way");
-    TEST_ASSERT(pb_csv_export_mat_items(buffer, N_ITEMS, "stdout") == 0);
-
 
     puts("Do search query");
     clear_buffer();

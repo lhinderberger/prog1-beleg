@@ -7,6 +7,7 @@
 #include <gtk/gtk.h>
 #include <memory.h>
 #include <malloc.h>
+#include <glib/gi18n.h>
 
 #include "frontend/error.h"
 #include "frontend/globals.h"
@@ -58,6 +59,9 @@ void save_changes() {
     /* Try to save item to database */
     if (!pb_mat_item_save(db, editorItem, !createMode))
         fatal_pb_error();
+
+    /* Inform user in status bar about our great success */
+    gtk_statusbar_push(statusbar, 0, C_("editor_save_changes", "Artikel erfolgreich geändert. Änderungen wurden gespeichert."));
 
     /* Return to previous screen */
     leave_editor();

@@ -27,7 +27,6 @@ set(CORE_SOURCE_FILES
         src/data/query.c
         src/data/image.c
         src/data/material_item.c
-        src/logic/csv_export.c
         src/logic/items_query.c
 )
 add_library(pb-core SHARED ${CORE_SOURCE_FILES})
