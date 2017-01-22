@@ -4,6 +4,7 @@
  */
 
 #include "common/error.h"
+#include "common/list.h"
 #include "frontend/globals.h"
 #include "frontend/editor.h"
 #include "frontend/error.h"
@@ -16,17 +17,42 @@ GtkGrid * listGrid = NULL;
 GtkLabel * pageLabel = NULL;
 GtkWidget * listScreen = NULL;
 GtkContainer * listDummyBox = NULL;
+GtkButton * currentSortingArrow = NULL;
 
 int listControlsWired = 0;
 int n_items_displayed = 0;
 int page = 0;
 int n_pages = 0;
+int asc = 1;
+int sort_field = PB_MAT_ITEM_VAR_NAME;
 
-void add_list_heading(int column, const char * label, int expand) {
+void render_page();
+
+void sorting_arrow_clicked(GtkButton * sorting_arrow, gpointer user_data) {
+    /* Determine new sorting and paging parameters */
+    int new_sort_field = (int)user_data;
+    asc = new_sort_field == sort_field ? !asc : 1;
+    sort_field = new_sort_field;
+    page = 0;
+
+    /* Re-render (this also deletes and re-renders all sorting arrow buttons) */
+    render_page();
+
+    /* Set current sorting arrow button icon */
+    gtk_button_set_image(currentSortingArrow, gtk_image_new_from_icon_name(asc ? "gtk-sort-ascending" : "gtk-sort-descending", GTK_ICON_SIZE_SMALL_TOOLBAR));
+}
+
+void add_list_heading(int column, const char * label, int expand, int sorting_column) {
     /* Create formatted label markup */
     char fmt_label[128];
     if (sprintf(fmt_label, "<b>%s</b>", label) < 0)
         fatal_error("sprintf failed for list heading");
+
+    /* Create heading box */
+    GtkBox * heading_box = (GtkBox*)gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+    if (!heading_box)
+        fatal_error(widget_creation_error);
+    gtk_widget_set_hexpand((GtkWidget*)heading_box, TRUE);
 
     /* Create label */
     GtkWidget * lbl_widget = gtk_label_new(NULL);
@@ -36,10 +62,25 @@ void add_list_heading(int column, const char * label, int expand) {
     gtk_label_set_xalign((GtkLabel*)lbl_widget, 0.0);
     if (expand)
         gtk_widget_set_hexpand(lbl_widget, TRUE);
+    gtk_container_add((GtkContainer*)heading_box, lbl_widget);
+    gtk_widget_show(lbl_widget);
+
+    /* Create sorting arrow */
+    if (sorting_column != 0) {
+        GtkButton * sorting_arrow = (GtkButton*)gtk_button_new_from_icon_name("gtk-sort-ascending", GTK_ICON_SIZE_SMALL_TOOLBAR);
+        if (!sorting_arrow)
+            fatal_error(widget_creation_error);
+        gtk_container_add((GtkContainer*)heading_box, (GtkWidget*)sorting_arrow);
+        g_signal_connect(sorting_arrow, "clicked", G_CALLBACK(sorting_arrow_clicked), (gpointer)sorting_column);
+        gtk_widget_show((GtkWidget*)sorting_arrow);
+
+        if (sorting_column == sort_field)
+            currentSortingArrow = sorting_arrow;
+    }
 
     /* Add to grid */
-    gtk_grid_attach(listGrid, lbl_widget, column, 0, 1, 1);
-    gtk_widget_show(lbl_widget);
+    gtk_grid_attach(listGrid, (GtkWidget*)heading_box, column, 0, 1, 1);
+    gtk_widget_show((GtkWidget*)heading_box);
 }
 
 void add_label(int row, int column, const char * label) {
@@ -63,7 +104,7 @@ void clear_list() {
         listGrid = NULL;
     }
 
-    /* Create a new one */
+    /* Create a new list grid */
     n_items_displayed = 0;
     listGrid = (GtkGrid*)gtk_grid_new();
     if (!listGrid)
@@ -74,10 +115,10 @@ void clear_list() {
     gtk_container_add(listDummyBox, (GtkWidget*)listGrid);
 
     /* Add headings */
-    add_list_heading(1, C_("List headings", "Artikelname"), 1);
-    add_list_heading(2, C_("List headings", "Artikelnummer"), 1);
-    add_list_heading(3, C_("List headings", "Lagerbestand"), 0);
-    add_list_heading(4, C_("List headings", "Aktion       "), 0);
+    add_list_heading(1, C_("List headings", "Artikelname"), 1, PB_MAT_ITEM_VAR_NAME);
+    add_list_heading(2, C_("List headings", "Artikelnummer"), 1, PB_MAT_ITEM_VAR_ARTICLE_NO);
+    add_list_heading(3, C_("List headings", "Lagerbestand"), 0, PB_MAT_ITEM_VAR_N_STOCK);
+    add_list_heading(4, C_("List headings", "Aktion       "), 0, 0);
 
     /* Show widget */
     gtk_widget_show((GtkWidget*)listGrid);
@@ -193,7 +234,7 @@ void render_page() {
     gtk_label_set_text(pageLabel, buf);
 
     /* Retrieve and render current page */
-    int total_items = pb_list_mat_items(db, item_buf, PB_MAT_ITEM_VAR_NAME, 1, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
+    int total_items = pb_list_mat_items(db, item_buf, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
     if (total_items < 0)
         fatal_pb_error();
     for (int i = 0; i < total_items; i++)

@@ -22,6 +22,7 @@ pkg_check_modules(GTK gtk+-3.0)
 set(CORE_SOURCE_FILES
         src/core.c
         src/common/error.c
+        src/common/list.c
         src/data/database.c
         src/data/query.c
         src/data/image.c
@@ -51,6 +52,10 @@ configure_file(ui/prog1-beleg.glade prog1-beleg.glade COPYONLY)
 add_executable(test-custom-error tests/common/custom_error.c tests/test_utils.c)
 add_test(test-custom-error test-custom-error)
 target_link_libraries(test-custom-error pb-core)
+
+add_executable(test-list tests/common/list.c tests/test_utils.c)
+add_test(test-list test-list)
+target_link_libraries(test-list pb-core)
 
 add_executable(test-database tests/data/database.c tests/test_utils.c)
 add_test(test-database test-database)
