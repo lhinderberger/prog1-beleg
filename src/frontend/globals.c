@@ -3,6 +3,7 @@
  * See README for details
  */
 
+#include <assert.h>
 #include "frontend/welcome.h"
 #include "frontend/error.h"
 #include "frontend/globals.h"
@@ -42,8 +43,10 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
 
 GtkWidget * checked_retrieve_widget(const char * identifier) {
     GtkWidget * widget = (GtkWidget*)gtk_builder_get_object(builder, identifier);
-    if (!widget)
+    if (!widget) {
+        warning("Retrieval error:", identifier);
         fatal_error(widget_retrieval_error);
+    }
     return widget;
 }
 
@@ -97,4 +100,18 @@ void swap_main_widget(GtkWidget * widget) {
     if (widget)
         gtk_box_pack_start(mainLayout, widget, 1, 1, 0);
     mainWidget = widget;
+}
+
+GdkPixbuf * scale_pixbuf_proportionally(GdkPixbuf * pixbuf, int max_height, int max_width) {
+    assert(pixbuf);
+
+    int src_width = gdk_pixbuf_get_width(pixbuf);
+    int src_height = gdk_pixbuf_get_height(pixbuf);
+    if (src_width == 0 || src_height == 0) {
+        warning("Image dimensions error!", "src_width or src_height is zero!");
+        return NULL;
+    }
+    int dest_width = src_width > src_height ? max_width : max_height * src_width / src_height;
+    int dest_height = src_width <= src_height ? max_height : max_width * src_height / src_width;
+    return gdk_pixbuf_scale_simple(pixbuf, dest_width, dest_height, GDK_INTERP_BILINEAR);
 }

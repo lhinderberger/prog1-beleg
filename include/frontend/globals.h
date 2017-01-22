@@ -43,4 +43,6 @@ void set_db_controls_sensitive(int sensitive);
 
 void swap_main_widget(GtkWidget * widget);
 
+GdkPixbuf * scale_pixbuf_proportionally(GdkPixbuf * pixbuf, int max_height, int max_width);
+
 #endif

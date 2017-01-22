@@ -210,6 +210,11 @@
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkFileFilter" id="imageFilefilter">
+    <mime-types>
+      <mime-type>image/*</mime-type>
+    </mime-types>
+  </object>
   <object class="GtkListStore" id="liststore1">
     <columns>
       <!-- column-name Artikelname -->
@@ -398,6 +403,7 @@
       <object class="GtkSpinButton" id="spinBtnStock">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <property name="halign">start</property>
       </object>
       <packing>
         <property name="left_attach">1</property>
@@ -448,6 +454,75 @@
               </packing>
             </child>
           </object>
+        </child>
+      </object>
+      <packing>
+        <property name="left_attach">1</property>
+        <property name="top_attach">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="label5">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Artikelbild</property>
+      </object>
+      <packing>
+        <property name="left_attach">0</property>
+        <property name="top_attach">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="box5">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkImage" id="articleImage">
+            <property name="width_request">200</property>
+            <property name="height_request">200</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="stock">gtk-missing-image</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkFileChooserButton" id="articleImageFileChooserBtn">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">start</property>
+            <property name="valign">center</property>
+            <property name="filter">imageFilefilter</property>
+            <property name="title" translatable="yes">Artikelbild auswählen</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="btnRemoveArticleImage">
+            <property name="label">gtk-remove</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">start</property>
+            <property name="use_stock">True</property>
+            <property name="always_show_image">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
         </child>
       </object>
       <packing>
@@ -533,8 +608,8 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="model">searchFieldsModel</property>
+            <property name="active">0</property>
             <property name="has_entry">True</property>
-            <property name="entry_text_column">0</property>
             <property name="id_column">1</property>
             <child internal-child="entry">
               <object class="GtkEntry" id="combobox-entry">

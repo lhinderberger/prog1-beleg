@@ -4,7 +4,7 @@
  */
 
 #include "common/error.h"
-#include "common/list.h"
+#include "data/image.h"
 #include "frontend/globals.h"
 #include "frontend/editor.h"
 #include "frontend/error.h"
@@ -167,8 +167,6 @@ void render_material_item(pb_material_item * item) {
     int row = 1 + n_items_displayed;
 
     /* Add image column */
-    //TODO: Read actual image from DB
-    //TODO: Hinzufügen zu Grid in eigene Funkton auslagern
     GtkWidget * art_image_frame = gtk_frame_new("");
     if (!art_image_frame)
         fatal_error(widget_creation_error);
@@ -183,6 +181,20 @@ void render_material_item(pb_material_item * item) {
     gtk_grid_attach(listGrid, art_image_frame, 0, row, 1, 1);
     gtk_widget_show(art_image_frame);
     gtk_widget_show(art_image);
+
+    /* Load image from database via input stream to pixbuf */
+    if (item->image_id) {
+        int image_len;
+        void *image = pb_image_retrieve(db, item->image_id, &image_len);
+        if (!image)
+            fatal_pb_error();
+
+        GdkPixbuf * pixbuf = gdk_pixbuf_new_from_stream(g_memory_input_stream_new_from_data(image, image_len, NULL), NULL, NULL);
+        if (!pixbuf)
+            warning("Could not load article image!", "");
+
+        gtk_image_set_from_pixbuf((GtkImage*)art_image, scale_pixbuf_proportionally(pixbuf, 80, 80));
+    }
 
 
     /* Add article name column */
@@ -264,6 +276,9 @@ void prev_page() {
 void search() {
     /* Determine search field */
     const char * search_field_name = gtk_combo_box_get_active_id(searchFieldCombo);
+    if (!search_field_name)
+        return;
+
     if (!strcmp(search_field_name, "PB_MAT_ITEM_VAR_NAME"))
         search_field = PB_MAT_ITEM_VAR_NAME;
     else if (!strcmp(search_field_name, "PB_MAT_ITEM_VAR_ARTICLE_NO"))
@@ -286,6 +301,8 @@ void show_material_list() {
     GtkButton * btnNextPage = (GtkButton*)checked_retrieve_widget("nextPageButton");
     GtkButton * btnPrevPage = (GtkButton*)checked_retrieve_widget("prevPageButton");
     GtkButton * btnCreateItem = (GtkButton*)checked_retrieve_widget("btnCreateItem");
+
+    gtk_combo_box_set_active(searchFieldCombo, 0);
 
     /* Wire up controls */
     if (!listControlsWired) {
