@@ -18,6 +18,7 @@
 
 int createMode = 0;
 int editorControlsWired = 0;
+int remove_image = 0;
 pb_material_item * editorItem = NULL;
 GtkGrid * editorWidget = NULL;
 GtkEntry * entryName = NULL;
@@ -70,6 +71,7 @@ void fill_ui() {
     gtk_spin_button_set_adjustment(spinBtnStock, n_stock_adjustment);
 
     /* Fill article image */
+    gtk_file_chooser_unselect_all((GtkFileChooser*)articleImageFileChooserBtn);
     cleanup_ai_pixbuf();
     if (editorItem->image_id != 0) {
         /* Load image from database via input stream to pixbuf */
@@ -100,6 +102,8 @@ void image_changed(GtkFileChooserButton * chooser) {
 
 void image_removed() {
     cleanup_ai_pixbuf();
+    remove_image = 1;
+    gtk_file_chooser_unselect_all((GtkFileChooser*)articleImageFileChooserBtn);
     reset_preview_image();
 }
 
@@ -120,7 +124,7 @@ void save_changes() {
 
     /* Try to save image */
     int remove_image_id = 0;
-    if (articleImagePixbuf) {
+    if (gtk_file_chooser_get_filename((GtkFileChooser*)articleImageFileChooserBtn) != NULL) {
         /* Read entire image file */
         FILE * f = fopen(gtk_file_chooser_get_filename((GtkFileChooser*)articleImageFileChooserBtn), "rb");
         if (!f)
@@ -145,8 +149,9 @@ void save_changes() {
         free(buffer);
         fclose(f);
     }
-    else if (editorItem->image_id) {
+    else if (remove_image) {
         /* Mark image for removal */
+        remove_image = 0;
         remove_image_id = editorItem->image_id;
         editorItem->image_id = 0;
     }
