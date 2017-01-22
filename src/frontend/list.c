@@ -231,11 +231,17 @@ void render_material_item(pb_material_item * item) {
 void render_page() {
     clear_list();
 
-    /* Count material items */
-    //TODO: Take search into account
-    n_pages = (int)ceil((double)pb_count_mat_items(db) / (double)ITEM_BUF_SIZE);
+    /* Get search string / mode */
+    const char * search_string = gtk_entry_get_text((GtkEntry*)searchEntry);
+    int search_mode = strlen(search_string) != 0;
+
+    /* Count material items and determine page count */
+    int raw_count = search_mode ? pb_find_mat_items(db, item_buf, search_string, search_field, 1, sort_field, asc, 0, 0) : pb_count_mat_items(db);
+    n_pages = (int)ceil((double)raw_count / (double)ITEM_BUF_SIZE);
     if (n_pages < 0)
         fatal_pb_error();
+    else if (n_pages == 0)
+        n_pages = 1;
 
     /* Adjust current page */
     if (page < 1)
@@ -248,15 +254,13 @@ void render_page() {
     sprintf(buf, C_("page label format", "Seite %d/%d"), page, n_pages);
     gtk_label_set_text(pageLabel, buf);
 
-    /* Get search string */
-    const char * search_string = gtk_entry_get_text((GtkEntry*)searchEntry);
-
     /* Retrieve and render current page */
     int total_items = 0;
-    if (strlen(search_string) == 0)
-        total_items = pb_list_mat_items(db, item_buf, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
-    else
+    if (search_mode)
         total_items = pb_find_mat_items(db, item_buf, search_string, search_field, 0, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
+    else
+        total_items = pb_list_mat_items(db, item_buf, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
+
     if (total_items < 0)
         fatal_pb_error();
     for (int i = 0; i < total_items; i++)
