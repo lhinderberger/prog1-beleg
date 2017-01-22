@@ -37,7 +37,7 @@ void pb_free_mat_item_buffer(pb_material_item_buffer buffer);
  * @param limit The maximum number of items to be read (usually the size of arr_out).
  * @return The number of items read, or a negative indicator on error, plus pb_errno will be set.
  */
-int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int offset, int limit);
+int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int sort_field, int sort_ascending, int offset, int limit);
 
 /**
  * List material items, optionally sorted by a certain field.

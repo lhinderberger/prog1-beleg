@@ -25,6 +25,21 @@ pb_material_item * pb_mat_item_create() {
     return result;
 }
 
+const char * pb_mat_item_get_column_name(int column_id) {
+    pb_clear_error();
+
+    switch (column_id) {
+        case PB_MAT_ITEM_VAR_ARTICLE_NO: return "article_no";
+        case PB_MAT_ITEM_VAR_ID: return "id";
+        case PB_MAT_ITEM_VAR_IMAGE_ID: return "image_id";
+        case PB_MAT_ITEM_VAR_N_STOCK: return "n_stock";
+        case PB_MAT_ITEM_VAR_NAME: return "name";
+        default:
+            pb_custom_error("Invalid column!");
+            return NULL;
+    }
+}
+
 pb_material_item * pb_mat_item_retrieve(pb_database * db, int id) {
     pb_clear_error();
 

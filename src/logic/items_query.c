@@ -72,7 +72,7 @@ void pb_free_mat_item_buffer(pb_material_item_buffer buffer) {
     free(buffer);
 }
 
-int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int offset, int limit) {
+int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const char * search_string, int field, int count_mode, int sort_field, int sort_ascending, int offset, int limit) {
     pb_clear_error();
 
     /* Validate input */
@@ -100,8 +100,12 @@ int pb_find_mat_items(pb_database * db, pb_material_item_buffer buf_out, const c
     }
 
     /* Prepare query */
+    const char * sort_field_name = pb_mat_item_get_column_name(sort_field);
+    if (!sort_field_name)
+        return -1;
+
     char query_sql[256];
-    if (sprintf(query_sql, "SELECT id, name, article_no, n_stock, image_id%s FROM material_items WHERE %s LIKE '%%' || :search_string || '%%' %s", count_mode ? ", COUNT(*)" : "", search_column, count_mode ? "" : "LIMIT :limit OFFSET :offset") < 0) {
+    if (sprintf(query_sql, "SELECT id, name, article_no, n_stock, image_id%s FROM material_items WHERE %s LIKE '%%' || :search_string || '%%' ORDER BY %s %s %s", count_mode ? ", COUNT(*)" : "", search_column, sort_field_name, sort_ascending ? "ASC" : "DESC", count_mode ? "" : "LIMIT :limit OFFSET :offset") < 0) {
         pb_error(PB_E_TOOLONG);
         return -1;
     }
@@ -160,27 +164,9 @@ int pb_list_mat_items(pb_database * db, pb_material_item_buffer buf_out, int sor
         return -1;
     }
 
-    const char * sort_field_name = NULL;
-    switch (sort_field) {
-        case PB_MAT_ITEM_VAR_ARTICLE_NO:
-            sort_field_name = "article_no";
-            break;
-        case PB_MAT_ITEM_VAR_ID:
-            sort_field_name = "id";
-            break;
-        case PB_MAT_ITEM_VAR_IMAGE_ID:
-            sort_field_name = "image_id";
-            break;
-        case PB_MAT_ITEM_VAR_N_STOCK:
-            sort_field_name = "n_stock";
-            break;
-        case PB_MAT_ITEM_VAR_NAME:
-            sort_field_name = "name";
-            break;
-        default:
-            pb_custom_error("Unsupported sort field!");
-            return -1;
-    }
+    const char * sort_field_name = pb_mat_item_get_column_name(sort_field);
+    if (!sort_field_name)
+        return -1;
 
     /* Prepare query */
     char query_sql[256];

@@ -5,6 +5,13 @@
 #ifndef PB_LIST
 #define PB_LIST
 
+/*
+ * A list datatype for use in upcoming releases of the software.
+ * (And for demonstration that even though there is no list data structure
+ * in the entire program, this because I _cannot_ program lists and thus avoided them,
+ * but rather because I chose solutions that simply didn't require lists.)
+ */
+
 typedef struct pb_list {
     struct pb_list * next;
     void * data;

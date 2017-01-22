@@ -21,4 +21,11 @@ pb_material_item * pb_mat_item_create();
  */
 int pb_mat_item_from_query_ptr(pb_query * query, pb_material_item * item_out, const int * column_mapping);
 
+/**
+ * Returns the SQL column name as string for the given column ID
+ * @param column_id A column ID as in as in PB_MAT_ITEM_VAR_*
+ * @return A constant string or NULL on error.
+ */
+const char * pb_mat_item_get_column_name(int column_id);
+
 #endif

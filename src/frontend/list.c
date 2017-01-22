@@ -18,6 +18,8 @@ GtkLabel * pageLabel = NULL;
 GtkWidget * listScreen = NULL;
 GtkContainer * listDummyBox = NULL;
 GtkButton * currentSortingArrow = NULL;
+GtkSearchEntry * searchEntry = NULL;
+GtkComboBox * searchFieldCombo = NULL;
 
 int listControlsWired = 0;
 int n_items_displayed = 0;
@@ -25,6 +27,7 @@ int page = 0;
 int n_pages = 0;
 int asc = 1;
 int sort_field = PB_MAT_ITEM_VAR_NAME;
+int search_field = PB_MAT_ITEM_VAR_NAME;
 
 void render_page();
 
@@ -52,7 +55,6 @@ void add_list_heading(int column, const char * label, int expand, int sorting_co
     GtkBox * heading_box = (GtkBox*)gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
     if (!heading_box)
         fatal_error(widget_creation_error);
-    gtk_widget_set_hexpand((GtkWidget*)heading_box, TRUE);
 
     /* Create label */
     GtkWidget * lbl_widget = gtk_label_new(NULL);
@@ -72,6 +74,7 @@ void add_list_heading(int column, const char * label, int expand, int sorting_co
             fatal_error(widget_creation_error);
         gtk_container_add((GtkContainer*)heading_box, (GtkWidget*)sorting_arrow);
         g_signal_connect(sorting_arrow, "clicked", G_CALLBACK(sorting_arrow_clicked), (gpointer)sorting_column);
+        gtk_widget_set_halign((GtkWidget*)sorting_arrow, GTK_ALIGN_END);
         gtk_widget_show((GtkWidget*)sorting_arrow);
 
         if (sorting_column == sort_field)
@@ -233,8 +236,15 @@ void render_page() {
     sprintf(buf, C_("page label format", "Seite %d/%d"), page, n_pages);
     gtk_label_set_text(pageLabel, buf);
 
+    /* Get search string */
+    const char * search_string = gtk_entry_get_text((GtkEntry*)searchEntry);
+
     /* Retrieve and render current page */
-    int total_items = pb_list_mat_items(db, item_buf, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
+    int total_items = 0;
+    if (strlen(search_string) == 0)
+        total_items = pb_list_mat_items(db, item_buf, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
+    else
+        total_items = pb_find_mat_items(db, item_buf, search_string, search_field, 0, sort_field, asc, ITEM_BUF_SIZE * (page - 1), ITEM_BUF_SIZE);
     if (total_items < 0)
         fatal_pb_error();
     for (int i = 0; i < total_items; i++)
@@ -251,11 +261,28 @@ void prev_page() {
     render_page();
 }
 
+void search() {
+    /* Determine search field */
+    const char * search_field_name = gtk_combo_box_get_active_id(searchFieldCombo);
+    if (!strcmp(search_field_name, "PB_MAT_ITEM_VAR_NAME"))
+        search_field = PB_MAT_ITEM_VAR_NAME;
+    else if (!strcmp(search_field_name, "PB_MAT_ITEM_VAR_ARTICLE_NO"))
+        search_field = PB_MAT_ITEM_VAR_ARTICLE_NO;
+    else
+        search_field = PB_MAT_ITEM_VAR_NAME;
+
+    /* Re-render */
+    page = 0;
+    render_page();
+}
+
 void show_material_list() {
     /* Retrieve controls from builder */
     listScreen = checked_retrieve_widget("listScreen");
     listDummyBox = (GtkContainer*)checked_retrieve_widget("listDummyBox");
     pageLabel = (GtkLabel*)checked_retrieve_widget("pageLabel");
+    searchEntry = (GtkSearchEntry*)checked_retrieve_widget("searchEntry");
+    searchFieldCombo = (GtkComboBox*)checked_retrieve_widget("searchFieldCombo");
     GtkButton * btnNextPage = (GtkButton*)checked_retrieve_widget("nextPageButton");
     GtkButton * btnPrevPage = (GtkButton*)checked_retrieve_widget("prevPageButton");
     GtkButton * btnCreateItem = (GtkButton*)checked_retrieve_widget("btnCreateItem");
@@ -265,6 +292,9 @@ void show_material_list() {
         g_signal_connect(btnCreateItem, "clicked", G_CALLBACK(create_btn_clicked), NULL);
         g_signal_connect(btnNextPage, "clicked", G_CALLBACK(next_page), NULL);
         g_signal_connect(btnPrevPage, "clicked", G_CALLBACK(prev_page), NULL);
+        g_signal_connect(searchEntry, "changed", G_CALLBACK(search), NULL);
+        g_signal_connect(searchFieldCombo, "changed", G_CALLBACK(search), NULL);
+
         listControlsWired = 1;
     }
 
