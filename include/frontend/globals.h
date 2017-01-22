@@ -36,6 +36,9 @@ void open_database();
 /* Action hook for saving the database under a different name */
 void save_database_as();
 
+/* Tries to retrieve a widget from the global builder. Raises a fatal error, when failed */
+GtkWidget * checked_retrieve_widget(const char * identifier);
+
 void set_db_controls_sensitive(int sensitive);
 
 void swap_main_widget(GtkWidget * widget);

@@ -11,3 +11,4 @@ CMakeFiles/
 Makefile
 prog1_beleg
 *.glade#
+*.glade~

@@ -40,6 +40,13 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
     show_material_list();
 }
 
+GtkWidget * checked_retrieve_widget(const char * identifier) {
+    GtkWidget * widget = (GtkWidget*)gtk_builder_get_object(builder, identifier);
+    if (!widget)
+        fatal_error(widget_retrieval_error);
+    return widget;
+}
+
 void close_database() {
     if (db) {
         pb_close_database(db);
@@ -51,9 +58,7 @@ void close_database() {
 
 void new_database() {
     /* Prepare dialog */
-    GtkFileChooserDialog * newDbFileChooser = (GtkFileChooserDialog*)gtk_builder_get_object(builder, "newDbFileChooser");
-    if (!newDbFileChooser)
-        fatal_error(widget_retrieval_error);
+    GtkFileChooserDialog * newDbFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("newDbFileChooser");
     gtk_window_set_transient_for((GtkWindow*)newDbFileChooser, mainWindow);
 
     /* Execute dialog */
@@ -66,9 +71,7 @@ void new_database() {
 
 void open_database() {
     /* Prepare dialog */
-    GtkFileChooserDialog * obenDbFileChooser = (GtkFileChooserDialog*)gtk_builder_get_object(builder, "openDbFileChooser");
-    if (!obenDbFileChooser)
-        fatal_error(widget_retrieval_error);
+    GtkFileChooserDialog * obenDbFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("openDbFileChooser");
     gtk_window_set_transient_for((GtkWindow*)obenDbFileChooser, mainWindow);
 
     /* Execute dialog */
@@ -85,14 +88,10 @@ void save_database_as() {
 }
 
 void set_db_controls_sensitive(int sensitive) {
-    GtkAction * actionCloseDatabase = (GtkAction*)gtk_builder_get_object(builder, "actionCloseDatabase");
-    if (!actionCloseDatabase)
-        fatal_error(widget_retrieval_error);
+    GtkAction * actionCloseDatabase = (GtkAction*)checked_retrieve_widget("actionCloseDatabase");
     gtk_action_set_sensitive (actionCloseDatabase, sensitive);
 
-    GtkAction * actionSaveDatabaseAs = (GtkAction*)gtk_builder_get_object(builder, "actionSaveDatabaseAs");
-    if (!actionSaveDatabaseAs)
-        fatal_error(widget_retrieval_error);
+    GtkAction * actionSaveDatabaseAs = (GtkAction*)checked_retrieve_widget("actionSaveDatabaseAs");
     gtk_action_set_sensitive (actionSaveDatabaseAs, sensitive);
 }
 

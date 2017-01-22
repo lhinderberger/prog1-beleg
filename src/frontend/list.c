@@ -5,6 +5,7 @@
 
 #include "common/error.h"
 #include "frontend/globals.h"
+#include "frontend/editor.h"
 #include "frontend/error.h"
 #include "frontend/list.h"
 
@@ -16,6 +17,7 @@ GtkLabel * pageLabel = NULL;
 GtkWidget * listScreen = NULL;
 GtkContainer * listDummyBox = NULL;
 
+int listControlsWired = 0;
 int n_items_displayed = 0;
 int page = 0;
 int n_pages = 0;
@@ -103,6 +105,19 @@ void n_stock_changed(GtkSpinButton *spin_button, gpointer user_data) {
     }
 }
 
+void create_btn_clicked(GtkButton *edit_btn) {
+    open_editor(NULL, 1);
+}
+
+void edit_btn_clicked(GtkButton *edit_btn, gpointer user_data) {
+    pb_material_item * item = (pb_material_item*)user_data;
+    if (!item || !edit_btn)
+        return;
+
+    /* Open editor */
+    open_editor(item, 0);
+}
+
 void render_material_item(pb_material_item * item) {
     g_assert(item);
     int row = 1 + n_items_displayed;
@@ -151,6 +166,7 @@ void render_material_item(pb_material_item * item) {
     gtk_widget_set_halign(edit_btn, GTK_ALIGN_CENTER);
     gtk_grid_attach(listGrid, edit_btn, 4, row, 1, 1);
     gtk_widget_show(edit_btn);
+    g_signal_connect(edit_btn, "clicked", G_CALLBACK(edit_btn_clicked), item);
 
     /* Finalize */
     n_items_displayed++;
@@ -195,34 +211,25 @@ void prev_page() {
 }
 
 void show_material_list() {
-    /* Initialize material list */
-    listScreen = (GtkWidget*)gtk_builder_get_object(builder, "listScreen");
-    if (!listScreen)
-        fatal_error(widget_retrieval_error);
+    /* Retrieve controls from builder */
+    listScreen = checked_retrieve_widget("listScreen");
+    listDummyBox = (GtkContainer*)checked_retrieve_widget("listDummyBox");
+    pageLabel = (GtkLabel*)checked_retrieve_widget("pageLabel");
+    GtkButton * btnNextPage = (GtkButton*)checked_retrieve_widget("nextPageButton");
+    GtkButton * btnPrevPage = (GtkButton*)checked_retrieve_widget("prevPageButton");
+    GtkButton * btnCreateItem = (GtkButton*)checked_retrieve_widget("btnCreateItem");
 
-    listDummyBox = (GtkContainer*)gtk_builder_get_object(builder, "listDummyBox");
-    if (!listDummyBox)
-        fatal_error(widget_retrieval_error);
-    swap_main_widget(listScreen);
+    /* Wire up controls */
+    if (!listControlsWired) {
+        g_signal_connect(btnCreateItem, "clicked", G_CALLBACK(create_btn_clicked), NULL);
+        g_signal_connect(btnNextPage, "clicked", G_CALLBACK(next_page), NULL);
+        g_signal_connect(btnPrevPage, "clicked", G_CALLBACK(prev_page), NULL);
+        listControlsWired = 1;
+    }
 
-    pageLabel = (GtkLabel*)gtk_builder_get_object(builder, "pageLabel");
-    if (!pageLabel)
-        fatal_error(widget_retrieval_error);
-
-    GtkButton * btnNextPage = (GtkButton*)gtk_builder_get_object(builder, "nextPageButton");
-    if (!btnNextPage)
-        fatal_error(widget_retrieval_error);
-    g_signal_connect(btnNextPage, "clicked", G_CALLBACK(next_page), NULL);
-
-    GtkButton * btnPrevPage = (GtkButton*)gtk_builder_get_object(builder, "prevPageButton");
-    if (!btnPrevPage)
-        fatal_error(widget_retrieval_error);
-    g_signal_connect(btnPrevPage, "clicked", G_CALLBACK(prev_page), NULL);
-
-    listGrid = NULL;
-
-    //TODO: Load and render actual list
-    /* Render first page of material items */
-    page = 0;
+    /* Render current page of material items */
     render_page();
+
+    /* Show list */
+    swap_main_widget(listScreen);
 }
