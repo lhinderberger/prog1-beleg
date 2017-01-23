@@ -168,6 +168,48 @@
       <action-widget response="-3">openDbFileChooser-btnOpen1</action-widget>
     </action-widgets>
   </object>
+  <object class="GtkAction" id="actionSaveDatabaseAs">
+    <property name="label" translatable="yes">Datenbank speichern unter...</property>
+    <property name="short_label" translatable="yes">Datenbank speichern unter...</property>
+    <property name="stock_id">gtk-save-as</property>
+    <property name="always_show_image">True</property>
+  </object>
+  <object class="GtkImage" id="addImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-add</property>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkFileFilter" id="imageFilefilter">
+    <mime-types>
+      <mime-type>image/*</mime-type>
+    </mime-types>
+  </object>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name Artikelname -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Test 123</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkImage" id="newImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-new</property>
+  </object>
+  <object class="GtkImage" id="openImage">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-open</property>
+  </object>
   <object class="GtkBox" id="welcomeScreen">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -210,6 +252,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="image">newImage</property>
+                <property name="image_position">top</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -225,6 +269,8 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="image">openImage</property>
+                <property name="image_position">top</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -241,38 +287,6 @@
         <property name="position">1</property>
       </packing>
     </child>
-  </object>
-  <object class="GtkAction" id="actionSaveDatabaseAs">
-    <property name="label" translatable="yes">Datenbank speichern unter...</property>
-    <property name="short_label" translatable="yes">Datenbank speichern unter...</property>
-    <property name="stock_id">gtk-save-as</property>
-    <property name="always_show_image">True</property>
-  </object>
-  <object class="GtkImage" id="addImage">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-add</property>
-  </object>
-  <object class="GtkAdjustment" id="adjustment1">
-    <property name="upper">100</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
-  <object class="GtkFileFilter" id="imageFilefilter">
-    <mime-types>
-      <mime-type>image/*</mime-type>
-    </mime-types>
-  </object>
-  <object class="GtkListStore" id="liststore1">
-    <columns>
-      <!-- column-name Artikelname -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Test 123</col>
-      </row>
-    </data>
   </object>
   <object class="GtkFileFilter" id="pbFilefilter">
     <mime-types>

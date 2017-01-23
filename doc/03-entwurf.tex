@@ -14,9 +14,7 @@ den darunterliegenden Schichten bzw. externen Bibliotheken erlaubt.
 
 Eine Schicht kann -- z.B. zu Testzwecken -- komplett ausgetauscht werden; die
 Schnittstelle zwischen den Schichten wird fest durch deren jeweilige Header-Files
-definiert und ist unabhängig von der konkreten Implementierung. Eine
-Schichtimplementierung darf insbesondere nicht Funktionalität, die über die
-Standardschnittstelle hinaus geht, höheren Schichten zur Verfügung.
+definiert und ist unabhängig von der konkreten Implementierung.
 
 \subsubsection{Datenabstraktionsschicht}
 \label{datenabstraktionsschicht}
@@ -25,7 +23,7 @@ Ihre Aufgabe ist die Umsetzung einer prinzipiell format- und speichermedienunabh
 CRUD\footnote{Create, Read, Update, Delete}-Schittstelle, welche alle Datensätze
 (und Operationen darauf) innerhalb einer Datenbank abbilden kann.
 
-Hierzu gehören auch abstrakte Query-Operationen (prepared Statements), die im
+Hierzu gehören auch abstrakte Query-Operationen (Prepared Statements), die im
 einfachsten Fall schlicht an die zugrunde liegende SQL-Bibliothek weitergegeben
 werden. Hierbei kommt in diesem Fall begünstigend hinzu, dass die vorliegende Datenbank
 bisher ohnehin nur Integer, String und Blob-Werte erfasst, man also die Schnittstelle deutlich
@@ -47,9 +45,9 @@ Datensätze wiedergegeben. Dies wird in diesem Fall wie gefordert über GTK+ umg
 kann aber theoretisch auch z.B. über ein via REST-API angebundenes HTML5-Frontend
 realisiert werden.
 
-Es ist möglich (und auch durchaus sinnvoll), die Anwendungslogikschicht als Bibliothek
-aufzubauen und zu kompilieren, um dann verschiedenste Arten von Darstellungsschichten
-nur noch gegen diese Bibliothek zu linken.
+Es ist möglich (und auch durchaus sinnvoll), den Kern der Anwendung, bestehend aus Datenabstraktions- und
+Anwendungslogikschicht als Bibliothek aufzubauen und zu kompilieren, um dann verschiedenste Arten von
+Darstellungsschichten nur noch gegen diese Bibliothek zu linken.
 
 \subsection{Schnittstellenentwurf}
 Ergebnis des Schnittstellenentwurfs sind die entsprechenden Header-Files der jeweiligen Module,
@@ -98,7 +96,7 @@ Anwendungsfällen.
 
 Das Hauptfenster stellt den äußeren Rahmen der Anwendung dar. Es ist bewusst minimalistisch aufgebaut, um vom eigentlichen
 Inhalt der Anwendung nicht abzulenken, und besteht lediglich aus einer Werkzeugleiste für die Anwendungsfälle
-``Neue Datenbank anlegen'' und ``Bestehende Datenbank öffnen'' sowie einer Statusleiste
+``Neue Datenbank anlegen'', ``Bestehende Datenbank öffnen'' und ``Datenbank schließen'' sowie einer Statusleiste
 für unkritische Systemmeldungen an den Benutzer.
 
 Den Hauptteil des Fensters nehmen hingegen die jeweiligen Bildschirme ein, die im Folgenden aufgelistet sind.
