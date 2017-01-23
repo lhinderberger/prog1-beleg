@@ -7,7 +7,7 @@ Während in höheren Programmiersprachen wie Java oder C\# die Fehlerbehandlung 
 und somit naheliegend ist, kann dies für C++ nicht uneingeschränkt\footnote{Zwar existiert für C++ eine Fehlerbehandlung
 via Exceptions, allerdings ist diese für Bibliotheken nicht ohne Einschränkungen praktikabel, da Schnittstelle und
 Verhalten von C++-Exceptions nicht im Standard festgeschrieben und somit vom verwendeten Compiler abhängig sind.
-Da auch C++-Binärschnittstellen uneinheitlich sind, werden in der Praxis meist auch in C++ geschriebene
+Da auch C++-Binärschnittstellen uneinheitlich sind, werden in der Praxis nicht umsonst meist auch in C++ geschriebene
 Bibliotheken in C-Wrapper verpackt.} und für C-Programme überhaupt nicht behauptet werden.
 
 In der Praxis trifft man bei der Fehlerbehandlung in C-Programmen und -Bibliotheken auf verschiedenste Lösungen, vom
@@ -53,34 +53,57 @@ verbessert wird. Hierbei ist natürlich die Les- und somit Wartbarkeit der Softw
 andernfalls möglicherweise den langfristigen Projekterfolg gefährden kann.
 
 \subsection{Abfrageschnittstelle}
-TODO: Probleme mit Binärschnittstelle
+Bei der Gestaltung der Abfrage-/Queryschnittstelle kam an einer Stelle das Problem auf, dass nun mehrere Artikel
+gleichzeitig von der Anwendungslogikschicht zurückgegeben werden sollten.
+
+Da sich in zukünftigen Releases die Größe der Artikel-Datenstruktur (\lstinline{pb_material_item}) durch Ergänzungen ja ändern
+konnte, ich allerdings die Binärschnittstelle rückwärtskompatibel gestalten wollte, sah ich mich mit dem Problem
+konfrontiert, dass nicht einfach schlichte, vom rufenden Code bereitgestellt Arrays verwendet werden konnten.\footnote{
+In diesem Fall hätte sich nämlich bei einer Änderung der Größe der Datenstruktur die Größe der Arrays ohne Neukompilierung
+nicht geändert, was einen Verlust der Binärkompatiblität zur Folge gehabt hätte, da dann die Bibliothek versuchen würde
+in nicht allokierte Speicherbereiche zu schreiben.}
+
+Eine Möglichkeit wäre gewesen die API zu versionieren und die übergebenen Arrays an der Schnittstelle zu konvertieren.
+Allerdings habe ich mich stattdessen dafür entschieden, statt einem Array von Datenstrukturen schlichtweg ein Array
+von Pointern auf Datenstrukturen zu übergeben. Somit bleibt das Array stets gleich groß, selbst wenn sich die Größe
+der Datenstrukturen ändern sollte. Damit in anderer Richtung trotzdem nicht ``ins Vakuum'' geschrieben werden kann,
+wird dieses Array von Pointern komplett durch die Anwendungslogikschicht allokiert und auch wieder gelöscht.
+Daraus folgt, dass auch die referenzierten Datenstrukturen nun von der Anwendungslogikschicht statt vom rufenden Code
+allokiert werden.
+
+Einzige Bedingung zur Einhaltung einer stabilen Binärschnittstelle ist nun nur noch, dass sich die Reihenfolge (und
+compilerseitig auch das Packing) der an der Schnittstelle übergebenen Datenstrukturen nicht mehr ändert und Ergänzungen
+stets an das Ende der Datenstruktur hinzugefügt werden.
 
 \subsection{Randbemerkungen zur Programmiersprache C}
 Es hat sich im Verlauf der Implementierung immer wieder gezeigt, dass die Programmiersprache C in der System-, Embedded-
 und Hochleistungsprogrammierung beheimatet ist. Für die Anwendungsentwicklung ist C heute vor dem Hintergrund, dass der
 Overhead für interpretierte / Just-In-Time-kompilierte Programmiersprachen für den Anwender aufgrund der allgemeinen
-Verfügbarkeit entsprechend starker Hardware in den meisten Fällen nicht ins Gewicht fällt, nicht mehr das erste Mittel
-der Wahl. Eine wirtschaftliche, schnelle und elegante Anwendungsentwicklung wird insbesondere durch die unzureichende
-Fehlerbehandlung und das statische, hardwareorientierte Typsystem erschwert.
+Verfügbarkeit von großen Mengen an Arbeitsspeicher und ferner auch entsprechend starker Hardware in den meisten Fällen
+nicht ins Gewicht fällt, nicht mehr das erste Mittel der Wahl. Eine wirtschaftliche, schnelle und elegante Anwendungsentwicklung
+wird insbesondere durch die unzureichende Fehlerbehandlung und das statische, hardwareorientierte Typsystem erschwert.
 
 Heute fordern moderne, schnelllebige, agile Entwicklungsprozesse und kurze Innovationszyklen ihr Tribut -- ein hohes
 Abstraktionsniveau, die Wiederverwendung von Software und eine gute User Experience bei gleichzeitig hoher
 Zuverlässigkeit der Software rücken in den Vordergrund vor messbarer Performance. Hier bietet beispielsweise Python eine
-gangbare Alternative für die Anwendungsprogrammierung durch viel Funktionalität in der Standardbibliothek,
+gangbare Alternative für die Anwendungsprogrammierung durch viel Funktionalität in der Standardbibliothek, eine
+exzellente Anbindung an bereits bestehende (C-)Bibliotheken,
 vereinheitlichte Fehlerbehandlung via Exceptions sowie ein dynamisches, lösungsorientiertes Typsystem (z.B. keine
 Beschränkung des Zahlenraums, einfache String-Abstraktionen) und viele, sinnvolle Abstraktionen auf Sprachebene.
 Java hingegen sticht vor allem durch sein Ökosystem (IDEs, Test-Suiten, Plug-Ins, kommerzieller Support u.v.w.m) und
 seine sprachliche Verbindlichkeit hervor und setzt dort an, wo Python in gewissem Sinne die Reife fehlt\footnote{Trotz,
-dass Java eigentlich die jüngere der beiden Sprachen ist.}
+dass Java eigentlich die jüngere der beiden Sprachen ist.}. Gleiches gilt für C\#, welches sich insbesondere im
+Windows-Ökosystem als hervorragende Lösung zur Anwendungsentwicklung bewährt hat.
 
 Dennoch hat C durchaus seine Daseinsberechtigung, gerade in der hardwarenahen Programmierung und der Betriebssystementwicklung
 (wo jedoch Konkurrenz durch speichersichere Sprachen wie Rust bereits in den Startlöchern steht), sowie begrenzt auch
 für hochoptimierte Berechnungen (wobei hier funktionale Sprachen wie Haskell anfangen, C den Rang abzulaufen). In der
 Praxis denkbar wäre eine Koexistenz von C und beispielsweise Python in einer Webanwendung, wobei der Großteil des
-serverseitigen Codes in Python geschrieben und dann, für performance- oder speicherkritische Aufrufe, durch speziell
-optimierte C-Module ergänzt wird.
+serverseitigen Codes in Python geschrieben und dann, für komplexe und demnach stark leistungs- oder speicherbedürftige
+Berechnungen, durch speziell optimierte C-Module ergänzt wird.
 
-Langfristig wird jedoch wohl der Embedded-Bereich für C die wichtigste Nische bleiben, wo mit extrem begrenzten Resourcen
-gehaushaltet werden will und die Sprache eher mit Assembler als mit Java in Konkurrenz steht. Auch C-kompatible binäre
-Modulschnittstellen werden uns wohl noch lange erhalten bleiben, obwohl z.B. im Bereich der JVM (Java Virtual Machine)
-oder CLR (Microsoft Common Language Runtime) bereits objektorientierte Alternativen aufgezeigt wurden.
+Mittel- bis langfristig wird jedoch wohl der Embedded-Bereich für C die wichtigste Nische bleiben, wo mit extrem
+begrenzten Resourcen gehaushaltet werden will und die Sprache eher mit Assembler als mit Java in Konkurrenz steht. Auch
+C-kompatible binäre Modulschnittstellen werden uns wohl noch lange erhalten bleiben, obwohl z.B. im Bereich der JVM
+(Java Virtual Machine) oder CLR (Microsoft Common Language Runtime) bereits objektorientierte Alternativen aufgezeigt
+wurden.

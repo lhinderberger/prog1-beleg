@@ -134,7 +134,7 @@ mit Visual Studio dem GTK-Framework und Glade weit voraus.
 Speziell für den Willkommensbildschirm war es leider nicht möglich, die Buttons mit Icons auszustatten, ohne sie von ihrer
 zugewiesenen GTK-Aktion zu trennen.
 
-\subsubsection{Listenansicht}
+\subsubsection{Such- und Sortieransicht}
 \begin{center}
 \noindent\includegraphics[width=150mm,keepaspectratio]{images/06-listenansicht.png}
 \end{center}
@@ -147,3 +147,21 @@ gewesen, leider ist mir aber keine Möglichkeit ersichtlich, ein Glade-Widget me
 Somit verhält sich die Listenansicht sozusagen ``hybrid'': Der Äußere, statische Rahmen (z.B. Suchfeld, Button ``Hinzufügen'')
 ist in Glade erstellt und wird dann zur Laufzeit dynamisch um die einzelnen Listenpunkte ergänzt.
 Oben im Bild ist ein grobes Screendesign zu sehen, welches via Gimp erstellt wurde.
+
+Auf die Verwendung eines GtkTreeView wurde hierbei bewusst verzichtet, vor allem, da die Daten seitenweise geladen
+und in SQL sortiert werden.
+
+\subsubsection{Detailansicht}
+\begin{center}
+\noindent\includegraphics[width=150mm,keepaspectratio]{images/07-detailansicht}
+\end{center}
+
+Das Screendesign für die Detailansicht wurde wieder in Glade erstellt und beläuft sich auf ein sehr simples
+Formular, welches die Eingabevalidierung bereits selbst komplett übernimmt und darüber hinaus für den Nutzer
+keiner weiteren Erklärung bedarf.
+
+Dieses Formular kann gleichermaßen zum Anlegen neuer Artikel wie auch zum editieren bestehender Artikel verwendet
+werden.
+
+Bei der Implementierung war zu beachten, dass der Button "Artikel löschen" nur dann vorkommt, wenn gerade kein
+neuer Artikel angelegt wird.

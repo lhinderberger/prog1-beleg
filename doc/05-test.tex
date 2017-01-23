@@ -1,7 +1,26 @@
 \section{Test}
 
 \subsection{Testlauf Anwendungsfälle}
+Während des abschließenden Testlaufs durch alle Anwendungsfälle sind mir an vielen Stellen im Frontend noch Dinge
+aufgefallen, die nicht wie erwartet oder nicht für den Nutzer intuitiv funktioniert haben.
 
-TODO: Probleme während dem Testlauf (nicht-modale Dialoge, Ordner auswählen, nicht auf Doppelklick reagierende Dialoge).
+Beispielsweise ließ sich GTK via Glade nicht dazu überreden, das Dialogfeld zur Auswahl des Artikelbilds als modalen
+Dialog darzustellen. Erst durch eine ``Notlösung'', welche sich in das \lstinline{show}-Signal des Dialogfeldes
+einhakt, konnte das Problem behoben werden.
+
+Funktioniert haben, jedoch nicht intuitiv waren hingegen zum Beispiel die Dialogfelder zum Öffnen / Anlegen einer
+Datenbank. Diese haben nicht auf einen Doppelklick auf die auszuwählende Datei reagiert. Durch eine Anbindung an das
+\lstinline{file-activate}-Signal der Dialoge konnte dies behoben werden.
+
+Nach Auffindung aller nicht optimal oder fehlerhaft ausgeführten UI-Komponenten wurde schließlich versucht, das
+Programm durch beabsichtigte Falscheingaben zum Absturz oder zu undefiniertem Verhalten zu bringen. Hierbei wurden
+zusätzlich noch einige Fehler gefunden und abgestellt.
 
 \subsection{Abdeckung Spezifikation}
+Zuletzt habe ich noch einmal geprüft, ob ich auch wirklich alle Anforderungen umgesetzt habe. Und tatsächlich ist mir
+hierbei aufgefallen, dass ich die Funktionalität zur Löschung von Artikeln vergessen hatte.
+Hier hat sich wieder einmal die systematische Vorgehensweise und die ausführliche Dokumentation bezahlt gemacht.
+
+Was die Abdeckung der Spezifikation angeht, sind nach meinem Eindruck nach dem Test alle Pflicht- und auch die
+darüber hinausgehenden Anforderungen ausreichend erfüllt, sodass der Beleg nach einer probeweisen Inbetriebnahme in
+der Räumen der HTW Dresden abgabereif ist. Ein endgültiges Urteil hierüber steht mir jedoch selbstverständlich nicht zu.

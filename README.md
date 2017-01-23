@@ -19,12 +19,17 @@ This program links against and might include code of the following third-party l
 ## Structure
 ```
 \prog1-beleg
-|--doc - Contains LaTeX sources for the documentation summary mentioned above.
-|--include - Contains public and private include files for the core / data library
+|--doc     - Contains LaTeX sources for the documentation summary mentioned above.
+|--include - Contains public and private include files for the core / data library.
+|--src     - Contains source files for the included modules.
+|--tests   - Contains test cases that can also be called using the `test` make target.
+|--ui      - Contains the Glade definition(s) for the frontend graphical user interface.
 |
 |-CMakeLists.txt - Use this file to build the project using CMake
-|-main.c - "Hello World!"
 ```
 
 ## How to build
-Simply type `cmake .` to build this source tree and run `./prog1_beleg` to execute the program.
+Simply type `cmake .` followed by `make` to build this source tree and run `./pb-frontend`
+to execute the program.
+To execute all tests, run `make test` instead of `./pb-frontend`. You should see an
+evaluation of all test cases returned to you.
