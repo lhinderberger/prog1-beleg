@@ -138,7 +138,19 @@
               <placeholder/>
             </child>
             <child>
-              <placeholder/>
+              <object class="GtkButton" id="openDbFileChooser-btnOpen1">
+                <property name="label">gtk-open</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <property name="always_show_image">True</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
             </child>
           </object>
           <packing>
@@ -152,6 +164,9 @@
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="-3">openDbFileChooser-btnOpen1</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkBox" id="welcomeScreen">
     <property name="visible">True</property>
@@ -316,7 +331,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">newDbFileChooser-btnSave</action-widget>
+      <action-widget response="-3">newDbFileChooser-btnSave</action-widget>
     </action-widgets>
   </object>
   <object class="GtkFileChooserDialog" id="openDbFileChooser">
@@ -366,7 +381,7 @@
       </object>
     </child>
     <action-widgets>
-      <action-widget response="1">openDbFileChooser-btnOpen</action-widget>
+      <action-widget response="-3">openDbFileChooser-btnOpen</action-widget>
     </action-widgets>
   </object>
   <object class="GtkImage" id="saveImage">

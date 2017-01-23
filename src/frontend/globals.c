@@ -89,7 +89,7 @@ void new_database() {
     gtk_window_set_transient_for((GtkWindow*)newDbFileChooser, mainWindow);
 
     /* Execute dialog */
-    if (gtk_dialog_run((GtkDialog*)newDbFileChooser) == 1)
+    if (gtk_dialog_run((GtkDialog*)newDbFileChooser) == GTK_RESPONSE_ACCEPT)
         open_database_impl((GtkDialog*)newDbFileChooser, 1);
 
     /* Cleanup */
@@ -102,7 +102,7 @@ void open_database() {
     gtk_window_set_transient_for((GtkWindow*)obenDbFileChooser, mainWindow);
 
     /* Execute dialog */
-    if (gtk_dialog_run((GtkDialog*)obenDbFileChooser) == 1)
+    if (gtk_dialog_run((GtkDialog*)obenDbFileChooser) == GTK_RESPONSE_ACCEPT)
         open_database_impl((GtkDialog*)obenDbFileChooser, 0);
 
     /* Cleanup */
