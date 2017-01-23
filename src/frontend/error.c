@@ -28,4 +28,5 @@ void warning(const char * message, const char * details) {
         fatal_error("Could not show warning message!");
     else
         gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
 }

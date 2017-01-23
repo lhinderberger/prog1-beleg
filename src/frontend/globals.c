@@ -4,6 +4,8 @@
  */
 
 #include <assert.h>
+#include <string.h>
+#include <glib/gi18n.h>
 #include "frontend/welcome.h"
 #include "frontend/error.h"
 #include "frontend/globals.h"
@@ -29,6 +31,28 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
     GtkFileChooser * chooser = GTK_FILE_CHOOSER(fileChooserDialog);
     if (!chooser || !(filename = gtk_file_chooser_get_filename(chooser)))
         fatal_error("Could not retrieve file name!");
+
+    /* Make sure this can be a database, by checking for the SQLite magic header (see: https://www.sqlite.org/fileformat.html) */
+    FILE * f = fopen(filename, "rb");
+    if (!f) {
+        gtk_widget_hide((GtkWidget*)fileChooserDialog);
+        warning(C_("magic header checking", "Konnte Datei nicht öffnen!"), filename);
+        return;
+    }
+    char magic_header[17];
+    int n_bytes_read = (int)fread(magic_header, sizeof(char), 16, f);
+    magic_header[16] = 0;
+    fclose(f);
+    if (n_bytes_read != 16){
+        gtk_widget_hide((GtkWidget*)fileChooserDialog);
+        warning(C_("magic header checking", "Konnte Dateikopf nicht lesen!"), filename);
+        return;
+    }
+    if (strcmp(magic_header, "SQLite format 3")) {
+        gtk_widget_hide((GtkWidget*)fileChooserDialog);
+        warning(C_("magic header checking", "Falsches Dateiformat!"), filename);
+        return;
+    }
 
     /* Open database */
     db = pb_open_database(filename, create, 1);
@@ -78,9 +102,8 @@ void open_database() {
     gtk_window_set_transient_for((GtkWindow*)obenDbFileChooser, mainWindow);
 
     /* Execute dialog */
-    //TODO: intercept directory opening!
     if (gtk_dialog_run((GtkDialog*)obenDbFileChooser) == 1)
-        open_database_impl((GtkDialog*)obenDbFileChooser, 0);
+        open_database_impl((GtkDialog *) obenDbFileChooser, 0);
 
     /* Cleanup */
     gtk_widget_hide((GtkWidget*)obenDbFileChooser);
