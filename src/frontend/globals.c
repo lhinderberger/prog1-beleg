@@ -32,26 +32,39 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
     if (!chooser || !(filename = gtk_file_chooser_get_filename(chooser)))
         fatal_error("Could not retrieve file name!");
 
-    /* Make sure this can be a database, by checking for the SQLite magic header (see: https://www.sqlite.org/fileformat.html) */
+    /* In create mode: Warn user about pre-existing file and abort.
+     * Otherwise make sure this can be a database, by checking for the SQLite magic header
+     * (see: https://www.sqlite.org/fileformat.html)
+     * */
     FILE * f = fopen(filename, "rb");
-    if (!f) {
-        gtk_widget_hide((GtkWidget*)fileChooserDialog);
-        warning(C_("magic header checking", "Konnte Datei nicht öffnen!"), filename);
-        return;
+    if (create) {
+        if (f) {
+            gtk_widget_hide((GtkWidget *) fileChooserDialog);
+            warning(C_("magic header checking", "Datei existiert bereits - kann existierende Datei nicht überschreiben!"), filename);
+            return;
+        }
     }
-    char magic_header[17];
-    int n_bytes_read = (int)fread(magic_header, sizeof(char), 16, f);
-    magic_header[16] = 0;
-    fclose(f);
-    if (n_bytes_read != 16){
-        gtk_widget_hide((GtkWidget*)fileChooserDialog);
-        warning(C_("magic header checking", "Konnte Dateikopf nicht lesen!"), filename);
-        return;
-    }
-    if (strcmp(magic_header, "SQLite format 3")) {
-        gtk_widget_hide((GtkWidget*)fileChooserDialog);
-        warning(C_("magic header checking", "Falsches Dateiformat!"), filename);
-        return;
+    else {
+        if (!f) {
+            gtk_widget_hide((GtkWidget *) fileChooserDialog);
+            warning(C_("magic header checking", "Konnte Datei nicht öffnen!"), filename);
+            return;
+        }
+
+        char magic_header[17];
+        int n_bytes_read = (int) fread(magic_header, sizeof(char), 16, f);
+        magic_header[16] = 0;
+        fclose(f);
+        if (n_bytes_read != 16) {
+            gtk_widget_hide((GtkWidget *) fileChooserDialog);
+            warning(C_("magic header checking", "Konnte Dateikopf nicht lesen!"), filename);
+            return;
+        }
+        if (strcmp(magic_header, "SQLite format 3")) {
+            gtk_widget_hide((GtkWidget *) fileChooserDialog);
+            warning(C_("magic header checking", "Falsches Dateiformat!"), filename);
+            return;
+        }
     }
 
     /* Open database */
