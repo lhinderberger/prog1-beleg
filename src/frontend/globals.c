@@ -28,7 +28,7 @@ void open_database_impl(GtkDialog * fileChooserDialog, int create) {
 
     /* Retrieve filename */
     char * filename;
-    GtkFileChooser * chooser = GTK_FILE_CHOOSER(fileChooserDialog);
+    GtkFileChooser * chooser = (GtkFileChooser*)fileChooserDialog;
     if (!chooser || !(filename = gtk_file_chooser_get_filename(chooser)))
         fatal_error("Could not retrieve file name!");
 
@@ -103,7 +103,7 @@ void open_database() {
 
     /* Execute dialog */
     if (gtk_dialog_run((GtkDialog*)obenDbFileChooser) == 1)
-        open_database_impl((GtkDialog *) obenDbFileChooser, 0);
+        open_database_impl((GtkDialog*)obenDbFileChooser, 0);
 
     /* Cleanup */
     gtk_widget_hide((GtkWidget*)obenDbFileChooser);

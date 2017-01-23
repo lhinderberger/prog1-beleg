@@ -27,6 +27,7 @@ GtkSpinButton * spinBtnStock = NULL;
 GtkImage * articleImage = NULL;
 GdkPixbuf * articleImagePixbuf = NULL;
 GtkFileChooserButton * articleImageFileChooserBtn = NULL;
+GtkFileChooserDialog * articleImageFileChooser = NULL;
 
 void cleanup_ai_pixbuf() {
     if (!articleImagePixbuf)
@@ -169,6 +170,12 @@ void save_changes() {
     leave_editor();
 }
 
+/* This function is necessary because GTK annoyingly does not keep the modal and transient_for settings in Glade */
+void aifc_modal_hack() {
+    gtk_window_set_transient_for((GtkWindow*)articleImageFileChooser, mainWindow);
+    gtk_window_set_modal((GtkWindow*)articleImageFileChooser, TRUE);
+}
+
 
 
 void open_editor(pb_material_item * item, int create) {
@@ -195,6 +202,7 @@ void open_editor(pb_material_item * item, int create) {
     spinBtnStock = (GtkSpinButton*)checked_retrieve_widget("spinBtnStock");
     articleImage = (GtkImage*)checked_retrieve_widget("articleImage");
     articleImageFileChooserBtn = (GtkFileChooserButton*)checked_retrieve_widget("articleImageFileChooserBtn");
+    articleImageFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("articleImageFileChooser");
 
     GtkButton * btnAbort = (GtkButton*)checked_retrieve_widget("btnAbort");
     GtkButton * btnSaveChanges = (GtkButton*)checked_retrieve_widget("btnSaveChanges");
@@ -207,6 +215,7 @@ void open_editor(pb_material_item * item, int create) {
         g_signal_connect(btnSaveChanges, "clicked", G_CALLBACK(save_changes), NULL);
         g_signal_connect(btnRemoveArticleImage, "clicked", G_CALLBACK(image_removed), NULL);
         g_signal_connect(articleImageFileChooserBtn, "file-set", G_CALLBACK(image_changed), NULL);
+        g_signal_connect(articleImageFileChooser, "show", G_CALLBACK(aifc_modal_hack), NULL);
         editorControlsWired = 1;
     }
 
