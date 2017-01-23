@@ -39,6 +39,9 @@ void open_database();
 /* Action hook for saving the database under a different name */
 void save_database_as();
 
+/* Hook for removing a material item, first asking the user for confirmation */
+void remove_material_item(GtkButton * button, pb_material_item * item);
+
 /* Tries to retrieve a widget from the global builder. Raises a fatal error, when failed */
 GtkWidget * checked_retrieve_widget(const char * identifier);
 

@@ -18,38 +18,39 @@ löschen sowie einzelne Datensätze anzeigen -- können
 \item Die im Programm erfassten Daten sollen im Dateisystem gespeichert (bzw. davon wieder ausgelesen) werden können.
 Hierbei ist nach klärendem Gespräch auch die Benutzung des Datenbanksystems SQLite erlaubt.
 \item Der Lagerbestand soll explizit über einen gesonderten Menüpunkt veränderbar sein
-\item Beim Verlassen der Anwendung sollen Daten, die sich während des Programmablaufs geändert werden
+\item Beim Verlassen der Anwendung sollen Daten, die sich während des Programmablaufs geändert haben,
 gespeichert werden können.\footnote{Eine kontinuierliche Speicherung ist hierbei nach klärendem Gespräch
 zulässig}
 \item Für die Umsetzung der Benutzeroberfläche muss zwingend die Bibliothek GTK+ verwendet werden
 \item Es wird ein modularer Aufbau vorausgesetzt - Das Programm ist in mehrere sinnvolle, getrennt kompilierbare Module
-zu unterteilen\footnote{Dies bedeutet m.E.n. eigene make-Targets für jedes Modul und schließt insbesondere nicht die
-Nutzung gemeinsamer Typdefinitionen und Schnittstellen sowie gegenseitige Abhängigkeiten beim Linken der finalen
-Anwendung aus}
+zu unterteilen\footnote{Dies schließt m.E.n. nicht die Nutzung gemeinsamer Typdefinitionen und Schnittstellen sowie
+gegenseitige Abhängigkeiten beim Linken der finalen Anwendung aus}
 Hierbei sind mindestens drei Module anzufertigen
 \item Quelltexte sind sorgsam zu dokumentieren -- insbesondere ist die Urheberschaft im Programmkopf zu
-kennzeichnen\footnote{Bei der Quellcodedokumentation richte ich mich nach \cite[Kap.4]{Martin:CleanCode}}
+kennzeichnen\footnote{Bei der Quellcodedokumentation richte ich mich nach \cite[Kap.4]{Martin:CleanCode} - sprich:
+Ich versuche möglichst ``sprechenden'' Code zu schreiben, welcher nur noch ergänzende Kommentare erfordert.}
 \item Das Programm muss auf den Laborrechnern der Fakultät Informatik an der HTW Dresden übersetz- und ausführbar sein.
-\item Teil der Aufgabenstellung ist die verpflichtende Verwendung dynamischer Speicherverwaltung per malloc/free\footnote{
-Ich werde den Einsatz von malloc/free dennoch auf das Notwendigste begrenzen, da gerade unter C die dynamische
+\item Teil der Aufgabenstellung ist die verpflichtende Verwendung dynamischer Speicherverwaltung per malloc/free
+\footnote{Ich werde den Einsatz von malloc/free dennoch auf das Notwendigste begrenzen, da gerade unter C die dynamische
 Speicherverwaltung erfahrungsgemäß eine ergiebige Fehlerquelle darstellt.}
 \end{itemize}
 
 \subsection{Ergänzende Anforderungen}
 Das oben genannte Minimum möchte ich außerdem noch um folgende Anforderungen ergänzen, die sich bei näherer Betrachtung
-der Aufgabenstellung als sinnvoll und einfach umzusetzen bzw. allgemein als bewährte Verfahrensweise herausgestellt haben.
+der Aufgabenstellung als sinnvoll und einfach umzusetzen bzw. allgemein als bewährte Verfahrensweise herausgestellt
+haben.
 
 \begin{itemize}
-\item Die Benutzeroberfläche soll selbsterklärend und fehlertolerant sein und möglichst wenig (also ideal überhaupt keine)
-Nutzerdokumentation erfordern
+\item Die Benutzeroberfläche soll minimalistisch, selbsterklärend und fehlertolerant sein und möglichst wenig (also
+ideal überhaupt keine) Nutzerdokumentation erfordern
 \item Das Programm -- insbesondere die Module für Abstraktion, Speicherung und Verwaltung von Datensätzen (vgl.
 Abschnitt \ref{datenabstraktionsschicht} ``\nameref{datenabstraktionsschicht}'', S. \pageref{datenabstraktionsschicht})
 -- soll möglichst umfassend durch automatische Softwaretests abgedeckt werden.
 Hierbei soll nach Möglichkeit auch das Vorgehen der Testgetriebenen Entwicklung (TDD) erprobt werden.
 \item Dem Nutzer soll es ermöglicht werden, optional zu einem Datensatz auch ein Bild zu speichern
 \item Die in GTK+ vorhandenen Schnittstellen zur Internationalisierung sollen genutzt werden.\footnote{Selbst wenn das
-Programm praktisch gesehen wohl einsprachig bleiben wird, ist dies noch immer der für GTK+-Anwendungen übliche Weg
-und mit vernachlässigbar wenig Mehraufwand umsetzbar.}
+Programm praktisch gesehen wohl einsprachig bleiben wird, ist dieses Vorgehen noch immer der ``goldene Weg'' und mit
+vernachlässigbar wenig Mehraufwand umsetzbar.}
 \end{itemize}
 
 \newpage
@@ -72,7 +73,7 @@ Die Kernanwendungsfälle, welche aus den Anforderungen entnommen werden können 
 \noindent\includegraphics[width=150mm,keepaspectratio]{images/02-anwendungsfaelle.png}
 \end{center}
 
-Bereits hier zeigt sich eine möglicherweise sinnvolle Aufteilung in zwei Ansichten: Eine Such- und Katalogansicht,
+Bereits hier zeigt sich eine möglicherweise sinnvolle Aufteilung in zwei Ansichten: Eine Such-/Katalogansicht,
 sowie eine Detailansicht für einzelne Datensätze. Somit können sich beispielsweise Suche, Sortierung und Auflistung der
 Materialdatensätze große Teile des Codes teilen und auch die Nutzeroberfläche bleibt in weiten Teilen kohärent und
 für den Nutzer einleuchtend.

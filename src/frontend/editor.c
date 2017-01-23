@@ -28,6 +28,7 @@ GtkImage * articleImage = NULL;
 GdkPixbuf * articleImagePixbuf = NULL;
 GtkFileChooserButton * articleImageFileChooserBtn = NULL;
 GtkFileChooserDialog * articleImageFileChooser = NULL;
+GtkButton * btnRemoveItem = NULL;
 
 void cleanup_ai_pixbuf() {
     if (!articleImagePixbuf)
@@ -61,6 +62,9 @@ void reset_preview_image() {
 }
 
 void fill_ui() {
+    /* Hide delete button in create mode */
+    gtk_widget_set_visible((GtkWidget*)btnRemoveItem, !createMode);
+
     /* Fill text entries */
     gtk_entry_set_text(entryName, editorItem->name);
     gtk_entry_set_text(entryArticleNo, editorItem->article_no);
@@ -176,6 +180,10 @@ void aifc_modal_hack() {
     gtk_window_set_modal((GtkWindow*)articleImageFileChooser, TRUE);
 }
 
+void remove_clicked() {
+    remove_material_item(btnRemoveItem, editorItem);
+}
+
 
 
 void open_editor(pb_material_item * item, int create) {
@@ -203,6 +211,7 @@ void open_editor(pb_material_item * item, int create) {
     articleImage = (GtkImage*)checked_retrieve_widget("articleImage");
     articleImageFileChooserBtn = (GtkFileChooserButton*)checked_retrieve_widget("articleImageFileChooserBtn");
     articleImageFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("articleImageFileChooser");
+    btnRemoveItem = (GtkButton*)checked_retrieve_widget("btnRemoveItem");
 
     GtkButton * btnAbort = (GtkButton*)checked_retrieve_widget("btnAbort");
     GtkButton * btnSaveChanges = (GtkButton*)checked_retrieve_widget("btnSaveChanges");
@@ -216,6 +225,7 @@ void open_editor(pb_material_item * item, int create) {
         g_signal_connect(btnRemoveArticleImage, "clicked", G_CALLBACK(image_removed), NULL);
         g_signal_connect(articleImageFileChooserBtn, "file-set", G_CALLBACK(image_changed), NULL);
         g_signal_connect(articleImageFileChooser, "show", G_CALLBACK(aifc_modal_hack), NULL);
+        g_signal_connect(btnRemoveItem, "clicked", G_CALLBACK(remove_clicked), NULL);
         editorControlsWired = 1;
     }
 

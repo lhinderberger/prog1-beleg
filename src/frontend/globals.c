@@ -6,6 +6,9 @@
 #include <assert.h>
 #include <string.h>
 #include <glib/gi18n.h>
+
+#include "common/error.h"
+#include "data/image.h"
 #include "frontend/welcome.h"
 #include "frontend/error.h"
 #include "frontend/globals.h"
@@ -124,6 +127,38 @@ void open_database() {
 
     /* Cleanup */
     gtk_widget_hide((GtkWidget*)obenDbFileChooser);
+}
+
+void remove_material_item(GtkButton * button, pb_material_item * item) {
+    if (!item) {
+        warning("Remove callback triggered without item!", "");
+        return;
+    }
+
+    /* Ask user for confirmation */
+    GtkDialog * dialog = (GtkDialog*)gtk_message_dialog_new(mainWindow, GTK_DIALOG_MODAL, GTK_MESSAGE_QUESTION, GTK_BUTTONS_YES_NO, C_("remove material item", "Möchten Sie den Artikel wirklich löschen?"));
+    if (!dialog)
+        fatal_error(widget_creation_error);
+    int response = gtk_dialog_run(dialog);
+    gtk_widget_destroy((GtkWidget*)dialog);
+
+    /* Abort, if user decided not to delete */
+    if (response == GTK_RESPONSE_NO)
+        return;
+
+    /* Perform delete otherwise */
+    if (pb_mat_item_delete(db, item->id) != 0)
+        fatal_pb_error();
+    if (item->image_id) {
+        if (pb_image_delete(db, item->image_id) != 0)
+            warning("Could not delete image!", pb_error_str(pb_errno()));
+    }
+
+    /* And reload material item list */
+    show_material_list();
+
+    /* Inform user in status bar about our great success */
+    gtk_statusbar_push(statusbar, 0, C_("material item deleted", "Artikel erfolgreich gelöscht. Änderungen wurden gespeichert."));
 }
 
 void set_db_controls_sensitive(int sensitive) {

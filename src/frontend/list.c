@@ -213,16 +213,28 @@ void render_material_item(pb_material_item * item) {
     gtk_grid_attach(listGrid, n_stock_editor, 3, row, 1, 1);
     gtk_widget_show(n_stock_editor);
 
-    /* Add edit button */
+    /* Add edit and delete buttons */
+    GtkBox * action_buttons_box = (GtkBox*)gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+    gtk_widget_set_valign(action_buttons_box, GTK_ALIGN_START);
+    gtk_widget_set_halign(action_buttons_box, GTK_ALIGN_CENTER);
+    gtk_grid_attach(listGrid, action_buttons_box, 4, row, 1, 1);
+    gtk_widget_show((GtkWidget*)action_buttons_box);
+
     GtkWidget * edit_btn = gtk_button_new_from_icon_name("gtk-edit", GTK_ICON_SIZE_BUTTON);
     if (!edit_btn)
         fatal_error(widget_creation_error);
     gtk_button_set_always_show_image((GtkButton*)edit_btn, TRUE);
-    gtk_widget_set_valign(edit_btn, GTK_ALIGN_START);
-    gtk_widget_set_halign(edit_btn, GTK_ALIGN_CENTER);
-    gtk_grid_attach(listGrid, edit_btn, 4, row, 1, 1);
+    gtk_container_add((GtkContainer*)action_buttons_box, (GtkWidget*)edit_btn);
     gtk_widget_show(edit_btn);
     g_signal_connect(edit_btn, "clicked", G_CALLBACK(edit_btn_clicked), item);
+
+    GtkWidget * remove_btn = gtk_button_new_from_icon_name("gtk-delete", GTK_ICON_SIZE_BUTTON);
+    if (!remove_btn)
+        fatal_error(widget_creation_error);
+    gtk_button_set_always_show_image((GtkButton*)remove_btn, TRUE);
+    gtk_container_add((GtkContainer*)action_buttons_box, (GtkWidget*)remove_btn);
+    gtk_widget_show(remove_btn);
+    g_signal_connect(remove_btn, "clicked", G_CALLBACK(remove_material_item), item);
 
     /* Finalize */
     n_items_displayed++;
