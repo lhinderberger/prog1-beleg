@@ -74,6 +74,14 @@ void init_ui(int argc, char ** args) {
     mainLayout = (GtkBox*)checked_retrieve_widget("mainLayout");
     statusbar = (GtkStatusbar*)checked_retrieve_widget("statusbar");
 
+    /* Wire up file chooser dialogs */
+    GtkFileChooserDialog * obenDbFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("openDbFileChooser");
+    g_signal_connect(obenDbFileChooser, "file-activated", G_CALLBACK(chooser_file_activated), NULL);
+    GtkFileChooserDialog * newDbFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("newDbFileChooser");
+    g_signal_connect(newDbFileChooser, "file-activated", G_CALLBACK(chooser_file_activated), NULL);
+    GtkFileChooserDialog * articleImageFileChooser = (GtkFileChooserDialog*)checked_retrieve_widget("articleImageFileChooser");
+    g_signal_connect(articleImageFileChooser, "file-activated", G_CALLBACK(chooser_file_activated), NULL);
+
     /* Wire and enable / disable actions */
     GtkAction * actionCloseDatabase = (GtkAction*)checked_retrieve_widget("actionCloseDatabase");
     g_signal_connect(actionCloseDatabase, "activate", G_CALLBACK(close_database), NULL);

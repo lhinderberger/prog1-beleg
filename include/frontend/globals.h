@@ -24,6 +24,9 @@ extern pb_database * db;
 #define ITEM_BUF_SIZE 5
 extern pb_material_item_buffer item_buf;
 
+/* Enables double-click to open files */
+void chooser_file_activated(GtkFileChooser * chooser);
+
 /* Closes database and resets application. Suitable for cleanup. */
 void close_database();
 

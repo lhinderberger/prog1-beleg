@@ -74,6 +74,10 @@ GtkWidget * checked_retrieve_widget(const char * identifier) {
     return widget;
 }
 
+void chooser_file_activated(GtkFileChooser * chooser) {
+    gtk_dialog_response((GtkDialog*)chooser, GTK_RESPONSE_ACCEPT);
+}
+
 void close_database() {
     if (db) {
         pb_close_database(db);
