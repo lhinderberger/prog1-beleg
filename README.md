@@ -33,3 +33,7 @@ Simply type `cmake .` followed by `make` to build this source tree and run `./pb
 to execute the program.
 To execute all tests, run `make test` instead of `./pb-frontend`. You should see an
 evaluation of all test cases returned to you.
+
+To build the LaTeX documentation found in `/doc`, change your directory to `/doc`
+and run latexmk -pdf dokumentation (you need a complete LaTeX distribution installed).
+You should have also received the documentation in PDF format via Email. 
